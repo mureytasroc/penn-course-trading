@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>PCA+ Alerts</title>
+	<link rel="stylesheet" href="../../styles/style.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto|Slabo+27px" rel="stylesheet">
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto|Slabo+27px" rel="stylesheet">
+
+	<meta charset='utf-8' />
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
+
+<% include global/head %>
+
+</head>
+
+<body>
+	<% include global/header %>
+
+<span class="hide" id="user_id"><%if(locals.user_id){%><%=user_id%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
+
+<span class="hide" id="alerts"><%if(locals.alerts){%><%=JSON.stringify(alerts)%><%}%></span>
+
+<div class="bodydiv">
+
+<h2>Current Alerts</h2>
+<br>
+<form enctype="application/x-www-form-urlencoded" action="/editalert" method="POST">
+	<span id="alertsList">
+
+	</span>
+</form>
+
+<form enctype="application/x-www-form-urlencoded" action="/newalert" method="GET">
+
+<br><br>
+	 <input type="submit" value="Add Alert(s)"><br>
+</form>
+
+</div>
+
+
+	<% include global/footer %>
+
+</body>
+
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+<script src="../../scripts/scripts.js"></script>
+
+</html>

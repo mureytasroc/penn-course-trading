@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PCA+ User Details</title>
+  <link rel="stylesheet" href="../../styles/style.css">
+  <% include global/head %>
+
+ </head>
+
+<body>
+  <% include global/header %>
+
+
+  <span class="hide" id="user_id"><%if(locals.user_id){%><%=user_id%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
+
+<div class="bodydiv">
+  <h2>User Settings</h2>
+  <form enctype="application/x-www-form-urlencoded" action="/useredit" method="POST">
+<br>
+<input class="hide" id="jcal" name="jcal" value="null" type="text">
+    <input class='hide' id="formID" name="formID" value="null" type="text">
+      Email to receive notifications: <input id="email" name="email" <% if(locals.userObject){ %>value=<%=userObject["email"]%><%}%> type="email" required><br><br>
+      Phone number to receive notifications (optional): <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"><br><br>
+      Calendar (optional): <input type='file' accept='text/ics' onchange='openFile(event)'><br>Upload your .ics class calendar (to get this, go to your Penn InTouch home page click "show schedule", scroll down, then click "Export as iCalendar")<br>
+     <br<br><input type="submit"><br>
+  </form>
+</div>
+
+
+  <% include global/footer %>
+  <script src="../scripts/scripts.js"></script>
+ </body>
+</html>

@@ -1,0 +1,32 @@
+{
+    "name": "PRS",
+    "version": "1.1.0",
+    "main": "file_server.js",
+    "scripts": {
+        "start": "node file_server.js"
+    },
+    "author": "Charles Cunningham, Constance Wang, Aryan Chauhan",
+    "license": "none",
+    "dependencies": {
+        "ejs": "^2.6.1",
+        "express": "^4.16.4",
+        "fs": "0.0.1-security",
+        "google-auth-library": "^5.2.0",
+        "google-spreadsheet": "^2.0.7",
+        "googleapis": "^39.2.0",
+        "heroku": "^7.22.0",
+        "http": "0.0.0",
+        "ics": "^2.16.0",
+        "jquery": "^3.3.1",
+        "method-override": "^3.0.0",
+        "multer": "^1.4.2",
+        "node": "^8.9.4",
+        "nodemailer": "^6.3.0",
+        "request": "^2.88.0",
+        "serve-favicon": "^2.5.0",
+        "twilio": "^3.34.0"
+    },
+    "engines": {
+        "node": "8.9.4"
+    }
+}

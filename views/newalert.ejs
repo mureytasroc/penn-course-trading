@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<title>PCA+ New Alert</title>
+		<link rel="stylesheet" href="styles/style.css">
+		<link href="https://fonts.googleapis.com/css?family=Roboto|Slabo+27px" rel="stylesheet">
+
+    <meta charset='utf-8' />
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+<% include global/head %>
+
+  </head>
+  <body>
+
+		<span class="hide" id="token_id"><%if(locals.user){%><%=user.token_id%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
+    <span class="hide" id="api_data"><%if(locals.alert){%><%=JSON.stringify(alert.classes.map(function(e){return {"course_number":e.split("-")[0],"course_id":e.replace("-"," ")}}))%><%}%><%if(locals.apidata){%><%=JSON.stringify(apidata)%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
+    <span class="hide" id="edit-settings"><%if(locals.alert){%><%=JSON.stringify(alert["settings"])%><%}%></span>
+    <span class="hide" id="edit-num"><%if(locals.num){%><%=num%><%}%></span>
+
+  <% include global/header %>
+
+<div class="bodydiv">
+  <form enctype="application/x-www-form-urlencoded" action="/coursesearch" method="GET">
+  <h3>Enter Course Info</h3>
+  <input type="text" id="dept" name="dept" placeholder="Department" <%if(locals.dept){%>value="<%=dept%>"<%}%> required>
+  <input type="text" id="course" name="course" placeholder="Course code (optional)" <%if(locals.course){%>value="<%=course%>"<%}%>>
+  <!--<button onclick="getStatus()">Submit</button>-->
+  <br>
+  Only show courses that fit with uploaded calendar: <input type="checkbox" name="mustfit">
+
+  <p id="demo"></p>
+  <input type="submit" value="Search"><br>
+  </div>
+  <div class="bodydiv">
+  </form>
+
+<div id="results"></div>
+
+
+</div>
+
+<br><br><br>
+
+  <% include global/footer %>
+
+  </body>
+
+	<script src="jquery/dist/jquery.js"> </script>	<script src="/scripts/scriptsJQ.js"> </script>
+	<script src="/scripts/scripts.js"></script>
+
+
+</html>
