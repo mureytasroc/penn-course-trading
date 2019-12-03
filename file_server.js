@@ -1,6 +1,15 @@
 var express = require('express');
 var favicon = require('serve-favicon');
 
+
+const requestIp = require('request-ip');
+var moment = require('moment');
+moment().format();
+
+
+
+var https = require("https");
+
 var multer = require('multer');
 
 var app = express();
@@ -9,12 +18,15 @@ var User = require(__dirname + '/models/User');
 var request = require('request');
 var Admin = require(__dirname + '/models/Admin')
 
-var https = require("https");
 
 app.use(express.static('public'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.use(favicon(__dirname + '/public/images/logo.png'));
+app.use(favicon(__dirname + '/public/images/favicon.png'));
+app.use('/tradeproposal', express.static('public'));
+app.use('/tradeproposal', favicon(__dirname + '/public/images/favicon.png'));
+app.use('/search', express.static('public'));
+app.use('/search', favicon(__dirname + '/public/images/favicon.png'));
 
 
 app.use(express.urlencoded());
@@ -41,14 +53,30 @@ var User = require(__dirname + '/models/User');
 
 app.get('/', function (request, response) {
 
-    var log = {
-        'timestamp': Date(),
-        'httpverb': "GET",
-        'username': "",
-        'route': "/"
-    }
-    console.log(log);
-//test
+	const ip = requestIp.getClientIp(request);
+	if(!request.query.wakeup){
+		var log = {
+			'Timestamp': moment().tz('America/New_York'),
+			'IP': ip,
+			'Verb': "GET",
+			'Route': "/",
+			'Page': "Home",
+		}
+		console.log(log);
+		Admin.log(log, function(){});
+	}
+	else{
+		var log = {
+			'Timestamp': moment().tz('America/New_York'),
+			'IP': ip,
+			'Verb': "GET",
+			'Route': "/",
+			'Page': "Home (Self-Request)",
+		}
+		console.log(log);
+	}
+	response.status(200);
+	response.setHeader('Content-Type', 'text/html')
 		response.render('index')
 
 
@@ -56,13 +84,16 @@ app.get('/', function (request, response) {
 
 app.get('/about', function (request, response) {
 
-    var log = {
-        'timestamp': Date(),
-        'httpverb': "GET",
-        'username': "",
-        'route': "/about"
-    }
-    console.log(log);
+	const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "GET",
+		'Route': "/about",
+		'Page': "about"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
@@ -72,13 +103,16 @@ app.get('/about', function (request, response) {
 
 app.get('/search', function (request, response) {
 
-    var log = {
-        'timestamp': Date(),
-        'httpverb': "GET",
-        'username': "",
-        'route': "/search"
-    }
-    console.log(log);
+	const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "GET",
+		'Route': "/search",
+		'Page': "search"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
@@ -103,62 +137,15 @@ const client = require('twilio')(textCreds["accountSid"], textCreds["authToken"]
 	  auth: emailCreds
 	});
 
-	setInterval(checkCourses , 5000);
 
 
 setInterval(function() {
-    https.get("https://www.penncoursealertplus.com");
+    https.get("https://www.penncoursetrading.com/?wakeup=true");
 }, 300000); // keeps Heroku website awake
 
 	var old_result_data=[];
 
-	function checkCourses(){
-		User.getUsers(function(a){
 
-			Admin.getCreds(function(creds){
-				const requestOptions = {
-						url: 'https://esb.isc-seo.upenn.edu/8091/open_data/course_status/2019A/all',
-						method: 'GET',
-						headers: creds
-				};
-				request(requestOptions, function(err, response, body) {
-
-					var parsedBody=JSON.parse(body)
-					var result_data = parsedBody["result_data"]
-					for (var r =0; r<min(result_data.length,old_result_data.length);i++){
-						if(result_data[r]["status"]!=old_result_data[r]["status"]&&result_data[r]["course_section"]===old_result_data[r]["course_section"]&&result_data[r]["status"]==="O"){
-						for (var i = 0; i < a.length; i++) {
-							for (var e=0; e< JSON.parse(a[i]["classesalert"]).length; e++){
-      					for (var j=0; j<JSON.parse(a[i]["classesalert"])[e]["classes"].length; j++){
-								if(result_data[r]["course_section"].includes(JSON.parse(a[i]["classesalert"])[e]["classes"][j].replace("-","")) ){
-										exports.notify(a[i]["email"],a[i]["phone"], result_data[r]["course_section"]+" opened up!", result_data[r]["course_section"]+" opened up!  You can now register on Penn Intouch (http://bit.ly/2k3Hris).  This message was brought to you by PennCourseAlertPlus.")
-										if(JSON.parse(a[i]["classesalert"])[e]["settings"]["autodelete"]){
-											if(alert["classes"].length==1){
-					              User.deleteAlert(a[i]["sub"],e,function(){})
-					            }
-											else{
-											var newClasses=JSON.parse(a[i]["classesalert"])[e]["classes"]
-											newClasses.splice(j,1)
-											var newAlert=JSON.parse(a[i]["classesalert"])
-											newAlert[e]["classes"]=newClasses
-											a[i]["classesalert"]=JSON.stringify(newAlert)
-											a[i].save()
-										}
-											j--;
-										}
-								}
-
-							}
-						}
-					}
-					}
-				}
-
-				} );
-			})
-
-		})
-	}
 
 
 //MAIN NOTIFICATION FUNCTION

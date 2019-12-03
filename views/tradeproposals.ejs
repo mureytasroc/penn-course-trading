@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>PCA+ Alerts</title>
+	<title>Trade Proposals</title>
 	<link rel="stylesheet" href="../../styles/style.css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto|Slabo+27px" rel="stylesheet">
 
@@ -21,19 +21,19 @@
 
 <span class="hide" id="user_id"><%if(locals.user_id){%><%=user_id%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
 
-<span class="hide" id="alerts"><%if(locals.alerts){%><%=JSON.stringify(alerts)%><%}%></span>
+<span class="hide" id="tradeproposals"><%if(locals.tradeproposals){%><%=JSON.stringify(tradeproposals)%><%}%></span>
 
 <div class="bodydiv">
 
-<h2>Current Alerts</h2>
+<h2>Current Trade Proposals</h2>
 <br>
-<form enctype="application/x-www-form-urlencoded" action="/editalert" method="POST">
-	<span id="alertsList">
+<form enctype="application/x-www-form-urlencoded" action="/edittradeproposal" method="POST">
+	<span id="tradeproposalsList">
 
 	</span>
 </form>
 
-<form enctype="application/x-www-form-urlencoded" action="/newalert" method="GET">
+<form enctype="application/x-www-form-urlencoded" action="/newtradeproposal" method="GET">
 
 <br><br>
 	 <input type="submit" value="Add Alert(s)"><br>

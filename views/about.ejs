@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>PCA+ About</title>
+		<title>About</title>
 		<link rel="stylesheet" href="styles/style.css">
 		<link href="https://fonts.googleapis.com/css?family=Roboto|Slabo+27px" rel="stylesheet">
 <% include global/head %>
@@ -9,19 +9,13 @@
 	<body>
 		<% include global/header %>
 		<div id="rules" class="bodydiv">
-			<h2>About Penn Course Alert +</h2>
-			<br>
-			All features of Penn Course Alert and so much more!<br><br>
+			<h2>About Penn Course Trading</h2>
+<br>
 			<p>
-				As incoming freshmen at Penn, our first impression of Penn was from the various student Facebook groups, like CS@Penn or Class of 2023. Amidst announcements of the variety of initiatives that Penn students were involved in, however, we noticed one specific type of post over the summer: course registration, ie. "Does anyone have CIS240? I'd be willing to trade any of my courses for that. Dm me!" At this time, many people who could not get into the classes they wanted used Penn Course Alert, an app that would send them a notification whenever a spot opened up. Unfortunately, Penn Course Alert's functionality was limited to an email input, phone input, and course code and section. To be notified upon a writing seminar opening up that fit with their schedule, a student would have to manually go through every writing course, check what time it took place (and if that time conflicted with their schedule), and manually enter the course code and section number into Penn Course Alert. Also, Penn Course Alert automatically quiets alerts after they have been issued (and this setting cannot be changed, which can be very annoying in some cases). Out of these problems, our solution Penn Course Alert Plus was born. The website allows users to sign in with their UPenn google account and manage their notifications. They can set whether notifications will autoquiet, search for courses by department and course code substring (100 level courses can be searched for by searching for 1 in the course code box, for example), and select whether to filter out courses that do not fit with an uploaded ics schedule. This ics schedule could be exported from the mock schedules tool on Penn InTouch, Penn's course registration website. Students could also add personal events, like club meetings, to the ics before uploading (to prevent unwanted conflicts). Once notification groups are created, they can be edited or deleted easily. As more users sign up to use our tool, we could begin to automatically recommend trades to students who are watching each other's courses. For instance, if a student in writing seminar A wants to be in sem B, while a student in sem B wants to be in sem A, but both of the classes are full, our tool could email them and let ask them anonymously if they would want to trade. If both were to accept, we could share with both users the other party's contact information. Eventually, if we could work with the university to make trades automatic, we could optimize the course barter market by modeling it as a directed graph, where each directed edge would represent a course want (we could use an algorithm that identifies the maximum spanning system of disjoint directed cycles to do this: <a href='https://www.cs.cmu.edu/~dabraham/papers/abs07.pdf'>https://www.cs.cmu.edu/~dabraham/papers/abs07.pdf</a>).
-
-				PennCourseAlert monitors the UPenn course API every minute to check on course openings. If a course opens up that a user is watching, an email (definitely) and text (optionally) is sent to the user notifying them (depending on whether they chose to input their phone number).
-
-				We built the front end of Penn Course Alert Plus with HTML, CSS, and Bootstrap, and the back end in Nodejs and express. We used Google cloud space for our database. Having access to the Penn open data API was critical to our project; we used it to get information about course codes, meeting times, and more. Working with Penn's API was a new experience for us, but fortunately, the docs were quite comprehensive. Our texting service used Twilio's API to send SMS about open courses, and we used Nodemailer for the emails. Generally, the whole project was quite challenging for us. We had a lot of complicated functionality to implement, and we are all freshmen (hacking without much experience is not an easy task).
-
-				While we didn't get his name, one mentor in Towne 319 was helping hackers for nearly the entire night (he helped us get our calendar upload and ical.js working: <a href='https://github.com/mozilla-comm/ical.js/'>https://github.com/mozilla-comm/ical.js/</a>'). Mad respect.
-
-				We hope that our tool will make course notifications much easier to set up for students, saving them time and even enabling them to do useful things that were impossible with only PennCourseAlert. Furthermore, with enough users, our tool could make desperate Facebook posts (of students hoping to get into a full class) a thing of the past.
+				I made this website for people who want to trade courses. I'm sure there are situations where two people are each registered for a course that is closed, and they prefer each other's courses. This website would be a way to find these situations.
+			</p>
+			<p>
+				After matches are found, people could set up an after-hours time to trade, ideally in-person (to avoid scams).
 			</p>
 		</div>
 		<br>

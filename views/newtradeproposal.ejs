@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-		<title>PCA+ New Alert</title>
+		<title>New Trade Proposal</title>
 		<link rel="stylesheet" href="styles/style.css">
 		<link href="https://fonts.googleapis.com/css?family=Roboto|Slabo+27px" rel="stylesheet">
 
@@ -20,8 +20,8 @@
   <body>
 
 		<span class="hide" id="token_id"><%if(locals.user){%><%=user.token_id%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
-    <span class="hide" id="api_data"><%if(locals.alert){%><%=JSON.stringify(alert.classes.map(function(e){return {"course_number":e.split("-")[0],"course_id":e.replace("-"," ")}}))%><%}%><%if(locals.apidata){%><%=JSON.stringify(apidata)%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
-    <span class="hide" id="edit-settings"><%if(locals.alert){%><%=JSON.stringify(alert["settings"])%><%}%></span>
+    <span class="hide" id="api_data"><%if(locals.tradeproposal){%><%=JSON.stringify(tradeproposal.classes.map(function(e){return {"course_number":e.split("-")[0],"course_id":e.replace("-"," ")}}))%><%}%><%if(locals.apidata){%><%=JSON.stringify(apidata)%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
+    <span class="hide" id="edit-settings"><%if(locals.tradeproposal){%><%=JSON.stringify(tradeproposal["settings"])%><%}%></span>
     <span class="hide" id="edit-num"><%if(locals.num){%><%=num%><%}%></span>
 
   <% include global/header %>

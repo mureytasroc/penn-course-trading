@@ -4,7 +4,7 @@ var USER_ID = sessionStorage.getItem("user_id");
 
 
 
-if (document.title == "PCA+ Alerts") {
+if (document.title == "Trade Proposals") {
 
 
 
@@ -14,15 +14,15 @@ if($('#user_id').text()!=""){
     sessionStorage.setItem("user_id",USER_ID)
 }
 
-if($('#alerts').text()==""){
+if($('#tradeproposals').text()==""){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
-    $('#alerts').text(this.responseText)
+    $('#tradeproposals').text(this.responseText)
     finishPopulatingAlerts();
   }
 };
-xhttp.open("GET", "/alertsInfo?id="+USER_ID, true);
+xhttp.open("GET", "/tradeproposalsInfo?id="+USER_ID, true);
 xhttp.send();
 }
 else{
@@ -31,7 +31,7 @@ finishPopulatingAlerts();
 
 }
 function finishPopulatingAlerts(){
-  var alertsArray = JSON.parse($('#alerts').text())
+  var alertsArray = JSON.parse($('#tradeproposals').text())
   var alertsListHTML="<input type='text' name='id' value='"+USER_ID+"' class='hide'><table><tr><th>Classes</th><th>Settings</th><th>Actions</th></tr>"
   for(var i = 0; i<alertsArray.length ; i++){
     if(alertsArray[i]["settings"]["autodelete"]){
@@ -44,7 +44,7 @@ else{
   }
   alertsListHTML+="</table>"
 
-  $('#alertsList').html(alertsListHTML)
+  $('#tradeproposalsList').html(alertsListHTML)
 }
 
 
@@ -76,7 +76,7 @@ console.log(jcalData[2][0/*0-17*/][1])
 
 }
 
-if(document.title == "PCA+ New Alert"){
+if(document.title == "New Trade Proposal"){
 
 if($('#api_data').html()!=""){
 
@@ -89,10 +89,10 @@ courseData.sort(function(a,b){
 var htmlStuff=""
 var editing = ($('#edit-settings').text()!="")
 if(editing){
-  htmlStuff="<form action='/updateAlert' method='get'><input class='hide' type='text' name='num' value='"+$('#edit-num').text()+"'><input type='checkbox' onClick='toggle(this)' checked /> Toggle All<br/>___________<br><br>"
+  htmlStuff="<form action='/updateTradeProposal' method='get'><input class='hide' type='text' name='num' value='"+$('#edit-num').text()+"'><input type='checkbox' onClick='toggle(this)' checked /> Toggle All<br/>___________<br><br>"
 }
 else{
-  htmlStuff="<form action='/setAlert' method='get'><input type='checkbox' onClick='toggle(this)' /> Toggle All<br/>___________<br><br>"
+  htmlStuff="<form action='/setTradeProposal' method='get'><input type='checkbox' onClick='toggle(this)' /> Toggle All<br/>___________<br><br>"
 
 }
 
@@ -143,7 +143,7 @@ function matchesFunc(query, toBeSearched){
   return (subSearched===(query))
 }
 
-if(document.title == "PCA+ User Details"){
+if(document.title == "User Details"){
 
 //$('#calendar').on('change', function(){})
 
@@ -162,7 +162,7 @@ if(document.title == "PCA+ User Details"){
 
 
 
-  if(USER_ID == null && document.title != "PennCourseAlert+" && document.title != "PCA+ About"){
+  if(USER_ID == null && document.title != "Penn Course Trading" && document.title != "About"){
     console.log("scripts.js 122: USER_ID == NULL")
     signOut()
   }

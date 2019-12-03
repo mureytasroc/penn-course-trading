@@ -5,6 +5,10 @@ var request = require('request');
 
 const ics = require('ics')
 
+const requestIp = require('request-ip');
+var moment = require('moment');
+moment().format();
+
 
 var User = require(__dirname + '/../models/User');
 
@@ -12,7 +16,7 @@ var Admin = require(__dirname + '/../models/Admin')
 
 var FileServer = require(__dirname + '/../file_server');
 
-var CLIENT_ID="1018817613137-hn5ovvld3e1jlh0su3kvqhu6phqk8vd3.apps.googleusercontent.com"
+var CLIENT_ID="196113113303-pkf1lo671dkdl9jpp9t596ocsp2ghd40.apps.googleusercontent.com"
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(CLIENT_ID);
 
@@ -22,16 +26,19 @@ const client = new OAuth2Client(CLIENT_ID);
 
 
 
-router.get('/upload')
 
 router.get('/userdetails', function(req, res) {
 
-  var log = {
-    'timestamp': Date(),
-    'httpverb': "GET",
-    'route': "/getdata"
-  }
-  console.log(log);
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "GET",
+		'Route': "/userdetails",
+		'Page': "User Details"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
@@ -58,13 +65,16 @@ async function verify(token, callback) {
 
 router.post('/users', function(req, res) {
 
-  var log = {
-    'timestamp': Date(),
-    'httpverb': "POST",
-    'username': req.body.id,
-    'route': "/users"
-  }
-  console.log(log);
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "POST",
+		'Route': "/users",
+		'Page': "user_details"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
   verify(req.body.id_token, function(payload){
     const domain = payload['hd'];
@@ -112,13 +122,16 @@ console.log("not penn")
 
 
 router.get('/logout', function(req, res) {
-  var log = {
-    'timestamp': Date(),
-    'httpverb': "GET",
-    'username': "none",
-    'route': "/logout"
-  }
-  console.log(log);
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "GET",
+		'Route': "/logout",
+		'Page': "index"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
@@ -127,46 +140,55 @@ router.get('/logout', function(req, res) {
 
 
 
-router.get('/alerts', function(req, res) {
-  var log = {
-    'timestamp': Date(),
-    'httpverb': "GET",
-    'username': "none",
-    'route': "/alerts"
-  }
-  console.log(log);
+router.get('/tradeproposals', function(req, res) {
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "GET",
+		'Route': "/tradeproposals",
+		'Page': "tradeproposals"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
-  res.render('alerts');
+  res.render('tradeproposals');
 })
 
-router.get('/alertsInfo', function(req, res) {
-  var log = {
-    'timestamp': Date(),
-    'httpverb': "GET",
-    'username': "none",
-    'route': "/alertsInfo"
-  }
-  console.log(log);
+router.get('/tradeproposalsInfo', function(req, res) {
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "GET",
+		'Route': "/tradeproposalsInfo",
+		'Page': "none: tradeproposalsInfo"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
-  User.getAlerts(req.query.id,function(alerts){
+  User.getTradeProposals(req.query.id,function(tradeproposals){
   res.status(200);
 
-  res.send(alerts)
+  res.send(tradeproposals)
 })
 
 })
 
 router.post('/useredit', function(req, res) {
 
-  var log = {
-    'timestamp': Date(),
-    'httpverb': "PUT",
-    'username': req.body.formID,
-    'route': "/users"
-  }
-  console.log(log);
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "POST",
+		'Route': "/useredit",
+		'Page': "tradeproposals"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
 
 
@@ -179,12 +201,12 @@ userObject['phone']=req.body.phone
 userObject['calendar']=req.body.jcal
 
 
-    User.setUser(userObject , function(alerts) {
+    User.setUser(userObject , function(tradeproposals) {
 
         res.status(200);
         res.setHeader('Content-Type', 'text/html')
-        res.render('alerts', {
-          id: req.body.formID, userObject:userObject, alerts:alerts
+        res.render('tradeproposals', {
+          id: req.body.formID, userObject:userObject, tradeproposals:tradeproposals
         });
 
     });
@@ -217,24 +239,27 @@ router.get('/coursesearch', function(req,res){
       var result_data = parsedBody["result_data"]
       //var meta = body["service_meta"]
       //var pages = meta["number_of_pages"]
-      res.render('newalert',{apidata:result_data, dept:req.query.dept, course:req.query.course});
+      res.render('newtradeproposal',{apidata:result_data, dept:req.query.dept, course:req.query.course});
     });
   })
 
 
 })
 
-router.get('/setAlert', function(req, res) {
+router.get('/setTradeProposal', function(req, res) {
 
 
 
-  var log = {
-    'timestamp': Date(),
-    'httpverb': "GET",
-    'username': req.body.id,
-    'route': "/setalert"
-  }
-  console.log(log);
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "GET",
+		'Route': "/setTradeProposal",
+		'Page': "tradeproposals"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
   classes=req.query.classes
   if(!(classes instanceof Array)){
@@ -253,10 +278,10 @@ if(req.query.autodelete==="on"){
 else{
   settings={"autodelete":false};//IMPLEMENT SETTINGS
 }
-User.setNotification(userObject, classes, settings, function(alerts){
+User.setTradeProposal(userObject, classes, settings, function(tradeproposals){
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
-  res.render('alerts',{alerts:alerts});
+  res.render('tradeproposals',{tradeproposals:tradeproposals});
 })
 
 
@@ -268,17 +293,20 @@ User.setNotification(userObject, classes, settings, function(alerts){
 
 
 
-router.get('/updateAlert', function(req, res) {
+router.get('/updateTradeProposal', function(req, res) {
 
 
 
-  var log = {
-    'timestamp': Date(),
-    'httpverb': "GET",
-    'username': req.body.id,
-    'route': "/updatealert"
-  }
-  console.log(log);
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "GET",
+		'Route': "/updateTradeProposal",
+		'Page': "tradeproposals"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
   classes=req.query.classes
 
@@ -296,10 +324,10 @@ else{
 }
 num=req.query.num;
 
-User.editNotification(num,userid, classes, settings, function(alerts){
+User.editTradeProposal(num,userid, classes, settings, function(tradeproposals){
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
-  res.render('alerts',{alerts:alerts});
+  res.render('tradeproposals',{tradeproposals:tradeproposals});
 })
 
 
@@ -310,29 +338,32 @@ User.editNotification(num,userid, classes, settings, function(alerts){
 
 
 //here
-router.post('/editalert', function(req, res) {
+router.post('/edittradeproposal', function(req, res) {
 
-  var log = {
-    'timestamp': Date(),
-    'httpverb': "GET",
-    'username': req.body.id,
-    'route': "/editalert"
-  }
-  console.log(log);
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "POST",
+		'Route': "/edittradeproposal",
+		'Page': "tradeproposals"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
   if(req.body.edit){
-    User.getAlerts(req.body.id,function(alerts){
+    User.getTradeProposals(req.body.id,function(alerts){
       res.status(200);
       res.setHeader('Content-Type', 'text/html')
-      res.render('newalert',{num:req.body.edit,alert:alerts[req.body.edit]});
+      res.render('newtradeproposal',{num:req.body.edit,tradeproposal:alerts[req.body.edit]});
     })
   }
   else if(req.body.delete){
     console.log("delete "+req.body.delete)
-    User.deleteAlert(req.body.id,req.body.delete,function(){
+    User.deleteTradeProposal(req.body.id,req.body.delete,function(){
       res.status(200);
       res.setHeader('Content-Type', 'text/html')
-      res.render('alerts');
+      res.render('tradeproposals');
     })
   }
   else if(req.body.test){
@@ -348,10 +379,10 @@ router.post('/editalert', function(req, res) {
           if(alert["settings"]["autodelete"]){
             if(alert["classes"].length==1){
               deleted=true;
-              User.deleteAlert(req.body.id,req.body.test,function(){
+              User.deleteTradeProposal(req.body.id,req.body.test,function(){
                 res.status(200);
                 res.setHeader('Content-Type', 'text/html')
-                res.render('alerts');
+                res.render('tradeproposals');
               })
             }
             else{
@@ -364,7 +395,7 @@ router.post('/editalert', function(req, res) {
           a[i].save(function(){
             res.status(200);
             res.setHeader('Content-Type', 'text/html')
-            res.render('alerts');
+            res.render('tradeproposals');
           })
         }
   			}
@@ -379,19 +410,22 @@ router.post('/editalert', function(req, res) {
 
 
 
-router.get('/newalert', function(req, res) {
+router.get('/newtradeproposal', function(req, res) {
 
-  var log = {
-    'timestamp': Date(),
-    'httpverb': "GET",
-    'username': req.body.id,
-    'route': "/newalert"
-  }
-  console.log(log);
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "GET",
+		'Route': "/newtradeproposal",
+		'Page': "newtradeproposal"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
 
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
-  res.render('newalert');
+  res.render('newtradeproposal');
 
 
 });

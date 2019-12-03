@@ -1,6 +1,6 @@
 var GoogleSpreadsheet = require('google-spreadsheet');
 var creds = require('./client_secret_googleSheets.json');
-var doc = new GoogleSpreadsheet('1RVzV2HyXrtTU7ydEOKoahnXNDYFmwpDPEcwDMEbGSJ0');
+var doc = new GoogleSpreadsheet('1GqlATPmlCa0t6JxKVu3lrO0L7xE1Zp3X0nBl8lk3IDg');
 
 
 
@@ -77,7 +77,7 @@ Array.prototype.unique = function() {
     return a;
 };
 
-exports.setNotification = function (userObject, classes, settings, callback){
+exports.setTradeProposal = function (userObject, classes, settings, callback){
 	//console.log(settings);
 	exports.getUsers(function (a) {
 		for (var i = 0; i < a.length; i++) {
@@ -103,7 +103,7 @@ exports.setNotification = function (userObject, classes, settings, callback){
 }
 
 
-exports.editNotification = function (num,sub, classes, settings, callback){
+exports.editTradeProposal = function (num,sub, classes, settings, callback){
 	exports.getUsers(function (a) {
 		for (var i = 0; i < a.length; i++) {
 			if (sub == a[i]['sub']) {
@@ -119,7 +119,7 @@ exports.editNotification = function (num,sub, classes, settings, callback){
 	});
 }
 
-exports.getAlerts= function(sub, callback){
+exports.getTradeProposals= function(sub, callback){
 	exports.getUsers(function (a) {
 		for (var i = 0; i < a.length; i++) {
 			if (sub === a[i]['sub']) {
@@ -135,7 +135,7 @@ exports.getAlerts= function(sub, callback){
 
 
 
-exports.deleteAlert=function(id,num,callback){
+exports.deleteTradeProposal=function(id,num,callback){
 	exports.getUsers(function (a) {
 		for (var i = 0; i < a.length; i++) {
 			if (id === a[i]['sub']) {
