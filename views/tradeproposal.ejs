@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<title>Trade Proposal</title>
+		<link rel="stylesheet" href="styles/style.css">
+		<link href="https://fonts.googleapis.com/css?family=Roboto|Slabo+27px" rel="stylesheet">
+
+    <meta charset='utf-8' />
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+<% include global/head %>
+
+  </head>
+  <body>
+
+		<span class="hide" id="token_id"><%if(locals.user){%><%=user.token_id%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
+    <span class="hide" id="api_data"><% if(locals.apidata){%><%=JSON.stringify(apidata)%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
+    <span class="hide" id="edit-proposal"><%if(locals.tradeproposal){%><%=JSON.stringify(tradeproposal)%><%}%></span>
+    <span class="hide" id="edit-num"><%if(locals.num){%><%=num%><%}%></span>
+    <span class="hide" id="user_id"><%if(locals.user_id){%><%=user_id%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
+    <span class="hide" id="offering"><%if(locals.offering){%><%=offering%><%}%></span>
+    <span class="hide" id="receiving"><%if(locals.receiving){%><%=receiving%><%}%></span>
+
+  <% include global/header %>
+
+  <div class="bodydiv">
+    <h2><%if(locals.num){%>Update<%}else{%>New<%}%> Trade Proposal</h2>
+    <br>
+    <p>A trade proposal consists of a collection of courses (<span style='color:red;'>offerings</span>),
+      any one of which you would be willing to trade for a member of another collection
+      of courses (<span style='color:green;'>requests</span>).  Note that this tool will only facilitate single-course-for-single-course trades;
+    putting 5 courses in your offering and requesting sections does not mean you will be able to trade multiple courses for multiple courses.
+  It just means that you are willing to trade away any course in your offerings list for any course in your requests list.  You must have at least 1 course in both your offerings and requests section (if you just want
+to drop a course and give it to someone who needs it, post on the <a target="_blank" href='https://www.facebook.com/groups/759880114532358/'>Facebook group</a>).</p>
+  <p>Remember, you must be registered for all of the courses in your requests (this is part of the TOS below).  Also, you should ensure that you can actually register for all of the courses in your requests section without needing a permit.  The website will automatically ask you for confirmation if a course you are trying to request has a permit requirement for some students.  Note that some courses are blacklisted / cannot be traded (all CIS/NETS courses cannot be traded due to the CIS/NETS waitlist system).</p>
+  </div>
+
+<div class="bodydiv">
+  <form id="coursesearchform" enctype="application/x-www-form-urlencoded" action="#" method="GET">
+  <h3>Course Search</h3>
+  <input type="text" id="dept" name="dept" placeholder="Department" <%if(locals.dept){%>value="<%=dept%>"<%}%> required>
+  <input type="text" id="course" name="course" placeholder="Course code" <%if(locals.course){%>value="<%=course%>"<%}%> required>
+  <input type="text" id="section" name="section" placeholder="Section (optional)" <%if(locals.sec){%>value="<%=sec%>"<%}%>>
+  <input style="display:none;" type="text" id="edit-num-form" name="num" value="<%if(locals.num){%><%-num%><%}%>">
+  <!--<button onclick="getStatus()">Submit</button>-->
+  <br>
+
+  <p id="demo"></p>
+  </form>
+  <button id="searchbut">Search</button>
+  <div id="results"></div>
+  </div>
+
+
+
+
+<div id="tradeproposaldiv"></div>
+
+<br><br><br><br>
+
+  <% include global/footer %>
+
+  </body>
+
+	<script src="jquery/dist/jquery.js"> </script>	<script src="/scripts/scriptsJQ.js"> </script>
+	<script src="/scripts/scripts.js"></script>
+
+
+</html>

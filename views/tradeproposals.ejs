@@ -25,18 +25,24 @@
 
 <div class="bodydiv">
 
-<h2>Current Trade Proposals</h2>
+<h2>Trade Proposals</h2>
 <br>
 <form enctype="application/x-www-form-urlencoded" action="/edittradeproposal" method="POST">
 	<span id="tradeproposalsList">
-
+		<!-- <input type='text' name='id' value='" + USER_ID + "' class='hide'>
+		<table><tr><th>To Give</th><th>To Receive</th><th>Actions</th></tr>
+		<% if(locals.tradeproposals){ for(var i=0; i<tradeproposals.length; i++){ %>
+			<tr><td><div class='tableDiv'><%- tradeproposals[i]["offerings"] %></div></td><td><div class='tableDiv'><%- tradeproposals[i]["requests"] %></div></td>
+			<td><div class='tableDiv'><button type='submit' name='edit' value=<%- i %>>Edit</button><button type='submit' name='delete' value=<%- i %>>Delete</button><button type='submit' name='test' value=<%- i %>>Test</button></div></td></tr>
+		<% }} %>
+	</table> -->
 	</span>
 </form>
 
-<form enctype="application/x-www-form-urlencoded" action="/newtradeproposal" method="GET">
+<form enctype="application/x-www-form-urlencoded" action="/tradeproposal" method="GET">
 
 <br><br>
-	 <input type="submit" value="Add Alert(s)"><br>
+	 <input type="submit" value="Add Trade Proposal"><br>
 </form>
 
 </div>

@@ -79,7 +79,7 @@ router.post('/users', function(req, res) {
   verify(req.body.id_token, function(payload){
     const domain = payload['hd'];
     if(payload['hd']!=null){
-        if(domain.includes("upenn.edu") || domain.includes("trinityschoolnyc.org")){
+        if(domain.includes("upenn.edu")){
     const userid = payload['sub'];
 userObject = JSON.parse(JSON.stringify(payload))
 
@@ -101,11 +101,11 @@ userObject = JSON.parse(JSON.stringify(payload))
     }); //gives response on whether this is a proper new user
 }
 else{
-  notPenn();
+  notPenn(res);
 }
   }
 else{//no gsuite
-  notPenn();
+  notPenn(res);
 }
 }).catch(console.error);
 
@@ -114,8 +114,10 @@ else{//no gsuite
 
 
 
-function notPenn(){
+function notPenn(res){
 console.log("not penn")
+res.status(401);
+res.send("You must sign up with a Penn email")
 }
 
 
@@ -157,7 +159,7 @@ router.get('/tradeproposals', function(req, res) {
   res.render('tradeproposals');
 })
 
-router.get('/tradeproposalsInfo', function(req, res) {
+router.get('/:user/tradeproposals', function(req, res) {
   const ip = requestIp.getClientIp(request);
 	var log = {
 		'Timestamp': moment().tz('America/New_York'),
@@ -169,13 +171,14 @@ router.get('/tradeproposalsInfo', function(req, res) {
 	console.log(log);
 	Admin.log(log, function(){});
 
-  User.getTradeProposals(req.query.id,function(tradeproposals){
-  res.status(200);
+  User.getTradeProposals(req.params.user,function(tradeproposals){
+    res.status(200);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(tradeproposals)
+  })
 
-  res.send(tradeproposals)
 })
 
-})
 
 router.post('/useredit', function(req, res) {
 
@@ -217,122 +220,112 @@ userObject['calendar']=req.body.jcal
 });
 
 router.get('/coursesearch', function(req,res){
-
   var log = {
     'timestamp': Date(),
     'httpverb': "GET",
-    'username': req.body.id,
+    'username': req.query.id,
     'route': "/coursesearch"
   }
   console.log(log);
 
-  Admin.getCreds(function(creds){
-    const requestOptions = {
-        url: 'https://esb.isc-seo.upenn.edu/8091/open_data/course_info/'+req.query.dept+'/?number_of_results_per_page=1000',
-        method: 'GET',
-        headers: creds
-    };
-    request(requestOptions, function(err, response, body) {
-      res.status(200);
-      res.setHeader('Content-Type', 'text/html')
-      var parsedBody=JSON.parse(body)
-      var result_data = parsedBody["result_data"]
-      //var meta = body["service_meta"]
-      //var pages = meta["number_of_pages"]
-      res.render('newtradeproposal',{apidata:result_data, dept:req.query.dept, course:req.query.course});
-    });
+  User.isUser(req.query.id, function(isUser){
+    if(!isUser){
+      res.status(403);
+      res.setHeader('Content-Type', 'application/json');
+      res.send("You must be a user to query course data");
+    } else {
+
+      dept = req.query.dept.replace(/[^A-Za-z]/g, "").toUpperCase()
+      course = req.query.course.replace(/[^0-9]/g, "")
+      section = req.query.section.replace(/[^0-9]/g, "")
+
+      Admin.getCreds(function(creds){
+        const requestOptions = {
+            url: 'https://esb.isc-seo.upenn.edu/8091/open_data/course_section_search?course_id='+dept+course+section+'&term='+process.env.CURRENT_SEMESTER,
+            method: 'GET',
+            headers: creds
+        };
+        request(requestOptions, function(err, response, body) {
+          var parsedBody=JSON.parse(body)
+          var result_data = parsedBody["result_data"]
+          res.status(200);
+          res.setHeader('Content-Type', 'application/json');
+          res.send({apidata:result_data, dept:dept, course:course, sec:section});
+        });
+      })
+
+    }
   })
 
 
 })
 
-router.get('/setTradeProposal', function(req, res) {
+router.post('/tradeproposals', function(req, res) {
+
+  if(req.body.methodname == 'post'){
+    const ip = requestIp.getClientIp(request);
+  	var log = {
+  		'Timestamp': moment().tz('America/New_York'),
+  		'IP': ip,
+  		'Verb': "POST",
+  		'Route': "/tradeproposals",
+  		'Page': "tradeproposals"
+  	}
+  	console.log(log);
+  	Admin.log(log, function(){});
 
 
+    tradeproposal = JSON.parse(req.body.tradeproposal)
 
-  const ip = requestIp.getClientIp(request);
-	var log = {
-		'Timestamp': moment().tz('America/New_York'),
-		'IP': ip,
-		'Verb': "GET",
-		'Route': "/setTradeProposal",
-		'Page': "tradeproposals"
-	}
-	console.log(log);
-	Admin.log(log, function(){});
+    offerings = tradeproposal.offerings
+    requests = tradeproposal.requests
 
-  classes=req.query.classes
-  if(!(classes instanceof Array)){
-    classes = [classes]
+
+    userid = req.body.userid;
+
+    userObject = {}
+    userObject['sub']=userid
+
+    User.setTradeProposal(userObject, offerings, requests, function(tradeproposals){
+      res.status(200);
+      res.setHeader('Content-Type', 'text/html')
+      res.render('tradeproposals',{tradeproposals:tradeproposals});
+    })
+  } else{
+      const ip = requestIp.getClientIp(request);
+      var log = {
+        'Timestamp': moment().tz('America/New_York'),
+        'IP': ip,
+        'Verb': "GET",
+        'Route': "/updateTradeProposal",
+        'Page': "tradeproposals"
+      }
+      console.log(log);
+      Admin.log(log, function(){});
+
+      tradeproposal=JSON.parse(req.body.tradeproposal)
+
+
+      const userid = req.body.userid;
+      userObject = {}
+      userObject['sub']=userid
+
+    num=req.body.num;
+
+    User.editTradeProposal(num, userid, tradeproposal.offerings, tradeproposal.requests, function(tradeproposals){
+      res.status(200);
+      res.setHeader('Content-Type', 'text/html')
+      res.render('tradeproposals',{tradeproposals:tradeproposals});
+    })
   }
 
 
-    const userid = req.query.formID;
-userObject = {}
-userObject['sub']=userid
-var settings={}
-
-if(req.query.autodelete==="on"){
-  settings={"autodelete":true};//IMPLEMENT SETTINGS
-}
-else{
-  settings={"autodelete":false};//IMPLEMENT SETTINGS
-}
-User.setTradeProposal(userObject, classes, settings, function(tradeproposals){
-  res.status(200);
-  res.setHeader('Content-Type', 'text/html')
-  res.render('tradeproposals',{tradeproposals:tradeproposals});
-})
-
-
-
 })
 
 
 
 
 
-
-router.get('/updateTradeProposal', function(req, res) {
-
-
-
-  const ip = requestIp.getClientIp(request);
-	var log = {
-		'Timestamp': moment().tz('America/New_York'),
-		'IP': ip,
-		'Verb': "GET",
-		'Route': "/updateTradeProposal",
-		'Page': "tradeproposals"
-	}
-	console.log(log);
-	Admin.log(log, function(){});
-
-  classes=req.query.classes
-
-
-    const userid = req.query.formID;
-userObject = {}
-userObject['sub']=userid
-var settings="";
-
-if(req.query.autodelete=="on"){
-  settings={"autodelete":true};//IMPLEMENT SETTINGS
-}
-else{
-  settings={"autodelete":false};//IMPLEMENT SETTINGS
-}
-num=req.query.num;
-
-User.editTradeProposal(num,userid, classes, settings, function(tradeproposals){
-  res.status(200);
-  res.setHeader('Content-Type', 'text/html')
-  res.render('tradeproposals',{tradeproposals:tradeproposals});
-})
-
-
-
-})
 
 
 
@@ -352,10 +345,10 @@ router.post('/edittradeproposal', function(req, res) {
 	Admin.log(log, function(){});
 
   if(req.body.edit){
-    User.getTradeProposals(req.body.id,function(alerts){
+    User.getTradeProposals(req.body.id,function(proposals){
       res.status(200);
       res.setHeader('Content-Type', 'text/html')
-      res.render('newtradeproposal',{num:req.body.edit,tradeproposal:alerts[req.body.edit]});
+      res.render('tradeproposal',{num:req.body.edit,tradeproposal:proposals[req.body.edit]});
     })
   }
   else if(req.body.delete){
@@ -366,43 +359,6 @@ router.post('/edittradeproposal', function(req, res) {
       res.render('tradeproposals');
     })
   }
-  else if(req.body.test){
-    User.getUsers(function(a){
-      for (var i = 0; i < a.length; i++) {
-  			if (req.body.id === a[i]['sub']) {
-          var alerts=JSON.parse(a[i]["classesalert"])
-  				var alert=alerts[req.body.test]
-          var classInd = Math.floor(Math.random() * alert["classes"].length)
-  				var classi = alert["classes"][classInd]
-          FileServer.notify(a[i]["email"],a[i]["phone"], classi+" opened up!", classi+" opened up!  You can now register on Penn Intouch (http://bit.ly/2k3Hris).  This message was brought to you by PennCourseAlertPlus.")
-            var deleted=false;
-          if(alert["settings"]["autodelete"]){
-            if(alert["classes"].length==1){
-              deleted=true;
-              User.deleteTradeProposal(req.body.id,req.body.test,function(){
-                res.status(200);
-                res.setHeader('Content-Type', 'text/html')
-                res.render('tradeproposals');
-              })
-            }
-            else{
-            alert["classes"].splice(classInd,1)
-            alerts[req.body.test]=alert
-            }
-          }
-          if(!deleted){
-          a[i]["classesalert"]=JSON.stringify(alerts)
-          a[i].save(function(){
-            res.status(200);
-            res.setHeader('Content-Type', 'text/html')
-            res.render('tradeproposals');
-          })
-        }
-  			}
-  		}
-    })
-
-  }
 
 
 
@@ -410,22 +366,22 @@ router.post('/edittradeproposal', function(req, res) {
 
 
 
-router.get('/newtradeproposal', function(req, res) {
+router.get('/tradeproposal', function(req, res) {
 
   const ip = requestIp.getClientIp(request);
 	var log = {
 		'Timestamp': moment().tz('America/New_York'),
 		'IP': ip,
 		'Verb': "GET",
-		'Route': "/newtradeproposal",
-		'Page': "newtradeproposal"
+		'Route': "/tradeproposal",
+		'Page': "tradeproposal"
 	}
 	console.log(log);
 	Admin.log(log, function(){});
 
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
-  res.render('newtradeproposal');
+  res.render('tradeproposal');
 
 
 });

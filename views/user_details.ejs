@@ -14,17 +14,31 @@
   <span class="hide" id="user_id"><%if(locals.user_id){%><%=user_id%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
 
 <div class="bodydiv">
-  <h2>User Settings</h2>
+  <h2>Rules and Email</h2>
   <form enctype="application/x-www-form-urlencoded" action="/useredit" method="POST">
 <br>
 <input class="hide" id="jcal" name="jcal" value="null" type="text">
     <input class='hide' id="formID" name="formID" value="null" type="text">
-      Email to receive notifications: <input id="email" name="email" <% if(locals.userObject){ %>value=<%=userObject["email"]%><%}%> type="email" required><br><br>
-      Phone number to receive notifications (optional): <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"><br><br>
+      Email to receive trade-related communications: <input id="email" name="email" <% if(locals.userObject){ %>value=<%=userObject["email"]%><%}%> type="email" required><br><br>
+      <!--Phone number to receive notifications (optional): <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"><br><br>
       Calendar (optional): <input type='file' accept='text/ics' onchange='openFile(event)'><br>Upload your .ics class calendar (to get this, go to your Penn InTouch home page click "show schedule", scroll down, then click "Export as iCalendar")<br>
-     <br<br><input type="submit"><br>
+     <br<br>-->
+     <b>By using this website, you agree to refrain from:</b><br><br>
+     <ol>
+        <li>Registering for popular courses you don't need or want to take just to trade them<br><span style="font-style:italic; font-size:10px;">(Each user has a limited number of trades per registration period anyway; use them wisely)</span></li>
+        <br>
+        <li>Offering to trade away a course you are not registered for</li>
+        <br>
+        <li>Using money, coersion, or anything other than a course to gain leverage in course trading</li>
+        <br>
+        <li>Scamming someone out of a course (taking their course without dropping the promised course)</li>
+      </ol>
+      <br>
+      <i>Breaking any of these rules will result in being banned from this website, and potentially being reported to the University.</i>
+     <br><br><input type="submit" value="Continue"><br>
   </form>
 </div>
+<br><br><br><br><br><br>
 
 
   <% include global/footer %>

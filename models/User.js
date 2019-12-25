@@ -3,7 +3,17 @@ var creds = require('./client_secret_googleSheets.json');
 var doc = new GoogleSpreadsheet('1GqlATPmlCa0t6JxKVu3lrO0L7xE1Zp3X0nBl8lk3IDg');
 
 
-
+exports.isUser = function(sub, callback){
+	exports.getUsers(function (a) {
+		for (var i = 0; i < a.length; i++) {
+			if (sub == a[i]['sub']) {
+				callback(true);
+				return true;
+			}
+		}
+		callback(false)
+	});
+}
 
 exports.checkUser = function(userObject, callback){
 	exports.getUsers(function (a) {
@@ -46,16 +56,17 @@ exports.setUser = function (userObject, callback) { //updates user data
 		for (var i = 0; i < a.length; i++) {
 			if (userObject['sub'] === a[i]['sub']) {
 				a[i]["lastmodified"] = Date();
-				if(userObject['phone']!=""){
-				a[i]["phone"]=userObject['phone']}
 				a[i]["alertemail"]=userObject['alertemail']
-				a[i]["calendar"]=userObject['calendar']
 				var classesalert=""
+				var tradeproposals = {}
 				if(a[i]["classesalert"]){
 					classesalert=JSON.parse(a[i]["classesalert"])
 				}
+				if(a[i]["tradeproposals"]){
+					tradeproposals=JSON.parse(a[i]["tradeproposals"])
+				}
 				a[i].save(function(){
-					callback(classesalert)
+					callback(tradeproposals)
 				});
 			}
 		}
@@ -77,42 +88,64 @@ Array.prototype.unique = function() {
     return a;
 };
 
-exports.setTradeProposal = function (userObject, classes, settings, callback){
-	//console.log(settings);
+exports.setTradeProposal = function (userObject, offerings, requests, callback){
+	console.log(offerings);
+	console.log(requests);
 	exports.getUsers(function (a) {
+		found = false;
 		for (var i = 0; i < a.length; i++) {
 			if (userObject['sub'] == a[i]['sub']) {
-				var allAlerts=[];
+				found = true
+				var allProposals=[];
 				a[i]["lastmodified"] = Date();
-
-				if(!a[i]["classesalert"]){
-					allAlerts=[{"classes":classes,"datecreated":a[i]["lastmodified"],"settings":{}}]
-					a[i]["classesalert"]=JSON.stringify([{"classes":classes,"datecreated":a[i]["lastmodified"],"settings":settings}])
+				if(!a[i]["tradeproposals"]){
+					allProposals=[{"offerings":offerings, "requests":requests, "datecreated":a[i]["lastmodified"]}]
 				}
 				else{
-
-					allAlerts=JSON.parse(a[i]["classesalert"]).concat([{"classes":classes,"datecreated":a[i]["lastmodified"],"settings":settings}])
-					a[i]["classesalert"]=JSON.stringify(allAlerts)
+					allProposals = JSON.parse(a[i]["tradeproposals"])
+					if(!proposalExists(allProposals, offerings, requests)) {
+						allProposals = allProposals.concat([{"offerings":offerings, "requests":requests, "datecreated":a[i]["lastmodified"]}])
+					}
 				}
+				a[i]["tradeproposals"] = JSON.stringify(allProposals)
 				a[i].save(function(){
-					callback(allAlerts)
+					callback(allProposals)
 				});
 			}
+		}
+		if(!found){
+			callback(null)
 		}
 	});
 }
 
+function proposalExists(allProposals, offerings, requests){
+	result = false;
+	allProposals.forEach(prop => { if(arraysEqual(prop.offerings, offerings) || arraysEqual(prop.requests, requests)) { result = true; } })
+	return result;
+}
 
-exports.editTradeProposal = function (num,sub, classes, settings, callback){
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+
+exports.editTradeProposal = function (num,sub, offerings, requests, callback){
 	exports.getUsers(function (a) {
 		for (var i = 0; i < a.length; i++) {
 			if (sub == a[i]['sub']) {
-				var alerts=JSON.parse(a[i]['classesalert'])
-				alerts[num]["classes"]=classes
-				alerts[num]["settings"]=settings
-				a[i]['classesalert']=JSON.stringify(alerts)
+				var proposals=JSON.parse(a[i]['tradeproposals'])
+				proposals[num]["offerings"]=offerings
+				proposals[num]["requests"]=requests
+				a[i]['tradeproposals']=JSON.stringify(proposals)
 				a[i].save(function(){
-					callback(alerts)
+					callback(proposals)
 				})
 			}
 		}
@@ -123,13 +156,15 @@ exports.getTradeProposals= function(sub, callback){
 	exports.getUsers(function (a) {
 		for (var i = 0; i < a.length; i++) {
 			if (sub === a[i]['sub']) {
-				if(a[i]['classesalert']){
-				callback(JSON.parse(a[i]['classesalert']))}
+				if(a[i]['tradeproposals']){
+				callback(JSON.parse(a[i]['tradeproposals']))}
 				else{
 					callback([])
 				}
+				return 1;
 			}
 		}
+		callback([])
 	});
 }
 
@@ -139,9 +174,9 @@ exports.deleteTradeProposal=function(id,num,callback){
 	exports.getUsers(function (a) {
 		for (var i = 0; i < a.length; i++) {
 			if (id === a[i]['sub']) {
-				var alerts=JSON.parse(a[i]["classesalert"])
-				alerts.splice(num,1)
-				a[i]["classesalert"]=JSON.stringify(alerts)
+				var tradeproposals=JSON.parse(a[i]["tradeproposals"])
+				tradeproposals.splice(num,1)
+				a[i]["tradeproposals"]=JSON.stringify(tradeproposals)
 				a[i].save(callback);
 			}
 		}

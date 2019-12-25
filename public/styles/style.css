@@ -44,7 +44,7 @@ a {
 
 a:link,
 a:visited {
-	color:#01256e; 
+	color:#01256e;
 	text-decoration: none;
 }
 
@@ -73,11 +73,10 @@ h2 {
 	bottom:0;
 	width:100%;
 	text-align:center;
-	background-color: slategrey;
-	opacity: 50%;
+	background-color: slategray;
 	color: white !important;
 	margin-top: 50px;
-	height: 30px;
+	height: 40px;
 	font:Helvetica,sans-serif;
 	font-size:12;
 }
@@ -217,5 +216,5 @@ tr:nth-child(even) {
 .tableDiv{
 	overflow: auto;
 	white-space: nowrap;
-	width: 250px;
+	width: 100%;
 }

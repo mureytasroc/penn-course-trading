@@ -16,7 +16,9 @@ var app = express();
 
 var User = require(__dirname + '/models/User');
 var request = require('request');
-var Admin = require(__dirname + '/models/Admin')
+var Admin = require(__dirname + '/models/Admin');
+
+require('dotenv').config();
 
 
 app.use(express.static('public'));
@@ -101,25 +103,6 @@ app.get('/about', function (request, response) {
 
 });
 
-app.get('/search', function (request, response) {
-
-	const ip = requestIp.getClientIp(request);
-	var log = {
-		'Timestamp': moment().tz('America/New_York'),
-		'IP': ip,
-		'Verb': "GET",
-		'Route': "/search",
-		'Page': "search"
-	}
-	console.log(log);
-	Admin.log(log, function(){});
-
-    response.status(200);
-    response.setHeader('Content-Type', 'text/html')
-    response.render('search');
-
-});
-
 
 
 
@@ -143,12 +126,10 @@ setInterval(function() {
     https.get("https://www.penncoursetrading.com/?wakeup=true");
 }, 300000); // keeps Heroku website awake
 
-	var old_result_data=[];
-
-
 
 
 //MAIN NOTIFICATION FUNCTION
+/*
 exports.notify=function(email, phoneNumber, subject, messageBody){
 
 if(phoneNumber!=""){
@@ -179,6 +160,7 @@ transporter.sendMail(mailOptions, function(error, info){
 });
 
 }
+*/
 
 function min(a,b){
 	if(a>=b){
