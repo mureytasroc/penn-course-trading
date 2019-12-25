@@ -109,7 +109,7 @@ function renderSearchResults(editing){
       var htmlStuff = "";
   		for (var i = 0; i < courseData.length; i++) {
   			var name = courseData[i]["section_id_normalized"].replace(" ", "")
-  			htmlStuff += "<br><span onclick=\"offerCourse('"+JSON.stringify(editing)+"', '"+name+"')\" style='background-color: red; color:white; cursor: pointer;' title='Offer' >Give</span> <span onclick=\"requestCourse('"+JSON.stringify(editing)+"', '"+name+"')\" title='Request' style='background-color: green; color:white; cursor: pointer;'>Receive</span> <span>" + name + "</span>"
+  			htmlStuff += "<br><span onclick=\"offerCourse('"+JSON.stringify(editing)+"', '"+name+"')\" style='border-radius: 5px; padding: 1px 2px 1px 2px; background-color: red; color:white; cursor: pointer;' title='Offer' >Give</span> <span onclick=\"requestCourse('"+JSON.stringify(editing)+"', '"+name+"')\" title='Request' style='border-radius: 5px; padding: 1px 2px 1px 2px; background-color: green; color:white; cursor: pointer;'>Receive</span> <span>" + name + "</span>"
   		}
   		$('#results').html(htmlStuff)
     }
