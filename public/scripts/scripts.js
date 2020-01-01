@@ -260,7 +260,6 @@ function onSignIn(googleUser) {
 		var domain = googleUser.getHostedDomain()
 		if (typeof domain == "undefined") {
 			signOutHome()
-			//deleteAllCookies();
 			alert("Please sign in with your UPenn email.")
 		} else if (!(domain.includes("upenn.edu"))) {
 			signOutHome()
@@ -270,7 +269,7 @@ function onSignIn(googleUser) {
 			var queryString = ""
 
 			queryString += "fname:"
-			console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+			console.log("ID: " + profile.getId());
 			console.log('Full Name: ' + profile.getName());
 			console.log('Given Name: ' + profile.getGivenName());
 			console.log('Family Name: ' + profile.getFamilyName());
@@ -279,9 +278,6 @@ function onSignIn(googleUser) {
 
 			// The ID token you need to pass to your backend:
 			var id_token = googleUser.getAuthResponse().id_token;
-
-
-			//(sessionStorage.getItem("id_token") == null)//checks if signedIn
 
 			post('/users/', {
 				"id_token": id_token
@@ -333,8 +329,6 @@ function renderButton() {
 
 function post(path, params, method = 'post') {
 
-	// The rest of this code assumes you are not using a library.
-	// It can be made less wordy if you use one.
 	const form = document.createElement('form');
 	form.method = method;
 	form.action = path;
