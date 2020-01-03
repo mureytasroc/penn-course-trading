@@ -4,8 +4,11 @@ var favicon = require('serve-favicon');
 
 const requestIp = require('request-ip');
 var moment = require('moment');
+const ipInfo = require("ipinfo");
 moment().format();
 
+
+BLACKLISTED_ORGS = ["Amazon", "Google", "Microsoft", "Facebook"]
 
 
 var https = require("https");
@@ -54,34 +57,33 @@ var User = require(__dirname + '/models/User');
 //////////////////////////////////////////////////////////////////////////////////////
 
 app.get('/', function (request, response) {
-
 	const ip = requestIp.getClientIp(request);
-	if(!request.query.wakeup){
-		var log = {
-			'Timestamp': moment().tz('America/New_York'),
-			'IP': ip,
-			'Verb': "GET",
-			'Route': "/",
-			'Page': "Home",
+	ipInfo(ip, (err, cloc) => {
+		if(!request.query.wakeup && (err || !cloc || !BLACKLISTED_ORGS.reduce((t,c)=>{t||c.includes(cloc.org)},false))){
+			var log = {
+				'Timestamp': moment().tz('America/New_York'),
+				'IP': ip,
+				'Verb': "GET",
+				'Route': "/",
+				'Page': "Home",
+			}
+			console.log(log);
+			Admin.log(log, function(){});
 		}
-		console.log(log);
-		Admin.log(log, function(){});
-	}
-	else{
-		var log = {
-			'Timestamp': moment().tz('America/New_York'),
-			'IP': ip,
-			'Verb': "GET",
-			'Route': "/",
-			'Page': "Home (Self-Request)",
+		else{
+			var log = {
+				'Timestamp': moment().tz('America/New_York'),
+				'IP': ip,
+				'Verb': "GET",
+				'Route': "/",
+				'Page': "Home (Self-Request)",
+			}
+			console.log(log);
 		}
-		console.log(log);
-	}
-	response.status(200);
-	response.setHeader('Content-Type', 'text/html')
+		response.status(200);
+		response.setHeader('Content-Type', 'text/html')
 		response.render('index')
-
-
+	})
 });
 
 app.get('/about', function (request, response) {
@@ -121,11 +123,11 @@ const client = require('twilio')(textCreds["accountSid"], textCreds["authToken"]
 	});
 
 
-
+/*
 setInterval(function() {
     https.get("https://www.penncoursetrading.com/?wakeup=true");
 }, 300000); // keeps Heroku website awake
-
+*/
 
 
 //MAIN NOTIFICATION FUNCTION
