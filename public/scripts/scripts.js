@@ -3,8 +3,156 @@ var USER_ID = sessionStorage.getItem("user_id");
 var WAITLIST_DEPT = ["CIS", "CIT", "NETS"]
 var UNSUPPORTED_NOWAITLIST_DEPT = []
 
-var UCC = ["PAD", "PDP", "PIN", "PGH"]
+var UCC = ["PAD", "PDP", "PIN", "PGH", "PCD", "PCG", "PCW", "PLC"]
 var UCC_EXPL = {
+	CA: "SECTION ACTIVITY CO-REQUISITE REQUIRED",
+	CC: "COURSE CO-REQUISITE REQUIRED",
+	CS: "SECTION CO-REQUISITE REQUIRED",
+	MAC: "FULFILLS ASC CULTURE REQUIREMENT",
+	MAD: "FULFILLS ASC INSTITUTIONS DISTRIBUTION",
+	MAI: "FULFILLS ASC INFLUENCE REQUIREMENT",
+	MAL: "STRUCTURED,ACTIVE,IN-CLASS LEARNING",
+	MAM: "ATTENDANCE AT FIRST CLASS MANDATORY",
+	MAP: "ADVANCED PLACEMENT SECTION",
+	MAY: "COURSE APPROVED FOR ONE YEAR",
+	MBA: "MBA COURSE",
+	MBC: "CROSS CULTURAL INTERACTIONS AND DIVERSITY",
+	MBD: "ONLY OPEN TO MASTER OF BEH & DEC SCI STUDENTS",
+	MBE: "ETHICAL REASONING",
+	MBG: "GATEWAY WRITING",
+	MBL: "OBJECTS-BASED LEARNING COURSE",
+	MBN: "QUANTITATIVE",
+	MBP: "SCIENTIFIC PROCESS",
+	MBQ: "GATEWAY QUALITATIVE",
+	MBS: "GATEWAY SCIENTIFIC PROCESS",
+	MBT: "QUALITATIVE",
+	MBV: "GATEWAY QUANTITATIVE",
+	MBW: "WRITING",
+	MC1: "CROSS CULTURAL ANALYSIS",
+	MC2: "CULTURAL DIVERSITY IN US",
+	MCA: "ENROLLMENT BY APPLICATION ONLY",
+	MCC: "COMPUTING CERTIFICATE - ARTS AND SCIENCES",
+	MCG: "COURSE MUST BE TAKEN FOR A GRADE",
+	MCO: "LPS ONLINE PROGRAM COURSE",
+	MCP: "ONLY OPEN TO LPS PB PRE-HEALTH STUDENTS",
+	MCS: "ONLY OPEN TO LPS STUDENTS",
+	MDA: "ARTS & LETTERS SECTOR",
+	MDB: "HUM/SOC SCI - NAT SCI/MATH SECTOR",
+	MDC: "COURSE TAUGHT IN WASHINGTON, DC",
+	MDD: "FOR DOCTORAL STUDENTS ONLY",
+	MDF: "FORMAL REASONING & ANALYSIS",
+	MDH: "HISTORY & TRADITION SECTOR",
+	MDL: "LIVING WORLD SECTOR",
+	MDM: "SEE SPECIAL MESSAGE IN DEPARTMENT HEADER",
+	MDN: "NATURAL SCIENCE & MATH SECTOR",
+	MDO: "HUMANITIES & SOCIAL SCIENCE SECTOR",
+	MDP: "PHYSICAL WORLD SECTOR",
+	MDS: "SOCIETY SECTOR",
+	MDT: "GEN REQ I: SOCIETY",
+	MDU: "GEN REQ II: HIST & TRAD",
+	MDV: "GEN REQ III: ARTS & LET",
+	MDW: "FORMAL REASONING",
+	MDX: "GEN REQ V: LIVING WRLD",
+	MDY: "GEN REQ VI: PHYS WRLD",
+	MDZ: "GEN REQ VII: SCIENCE SECTOR",
+	MEM: "ALL READINGS AND LECTURES IN ENGLISH",
+	MER: "ENGINEERING STUDENTS ONLY",
+	MEV: "FOR WPWP CERTIFICATE STUDENTS ONLY",
+	MFA: "Fine Arts Library - Davis Seminar Room",
+	MFL: "FOREIGN LANG ACROSS CURRICULUM (FLAC) CRSE",
+	MFO: "FOR FRESHMEN ONLY",
+	MFP: "FRESHMEN AND SOPHOMORES ONLY",
+	MFR: "FORMAL REASONING COURSE",
+	MFS: "FRESHMAN SEMINAR",
+	MFW: "FRESHMAN JOSEPH WHARTON SCHOLARS STUDENTS ONLY",
+	MGC: "GREENFIELD INTERCULTURAL CENTER",
+	MGH: "BENJAMIN FRANKLIN SEMINARS",
+	MGL: "ONLY OPEN TO MLA-GLPS STUDENTS",
+	MHC: "EXEC SMHC PROGRAM STUDENTS ONLY",
+	MHD: "DEPARTMENTAL HONORS COURSE",
+	MHH: "HILLEL AUDITORIUM",
+	MHO: "SECTION FOR HONORS STUDENTS",
+	MHS: "FOR HUNTSMAN STUDENTS ONLY",
+	MHY: "HYBRID COURSE ONLY",
+	MIB: "MSSP Requirement",
+	MIC: "Fulfills MSW Research Option",
+	MID: "MSW Elective",
+	MIE: "Fulfills MSW Macro Practice Elective",
+	MIF: "Fulfills MSW Clinical Practice Elective",
+	MIG: "SP2 Ph.D. Requirement",
+	MIH: "Fulfills MSW Policy Option",
+	MIN: "INTERNATIONAL COURSE",
+	MIO: "FOR INTEGRATED STUDIES (ISP) STUDENTS ONLY",
+	MIS: "INDEPENDENT STUDY COURSE",
+	MLB: "ATTENDANCE AT FIRST LAB MEETING REQUIRED",
+	MLF: "LAB FEE $25.00",
+	MLI: "LAUDER INSTITUTE",
+	MMA: "AUDITION REQUIRED",
+	MMO: "MAJORS ONLY",
+	MMT: "THIS SECTION FOR M&T STUDENTS ONLY",
+	MNP: "NO PRIOR LANGUAGE EXPERIENCE REQUIRED",
+	MNU: "WILL NOT COUNT TOWARD UNDERGRADUATE DEGREES",
+	MOF: "ONLINE COURSE FEE $150",
+	MOL: "ONLINE COURSE ONLY",
+	MPA: "SUBJECT TO APPROVAL OF COMMITTEE ON INSTR",
+	MPG: "PENN GLOBAL SEMINAR",
+	MPH: "FOR PHD STUDENTS ONLY",
+	MPI: "Req PHYS LAB included in PHYS151 REG",
+	MPL: "PRIOR LANGUAGE EXPERIENCE REQUIRED",
+	MPP: "DESIGNATED SNF PAIDEIA PROGRAM COURSE",
+	MPR: "DU BOIS HOUSE MULTIPURPOSE ROOM",
+	MPS: "SECTION RESERVED FOR LPS STUDENTS ONLY",
+	MPY: "Req PHYS LAB included in PHYS150 REG",
+	MQS: "COLLEGE QUANTITATIVE DATA ANALYSIS REQ.",
+	MRA: "ARTS HOUSE SEMINAR",
+	MRB: "BUTCHER-SPEAKMAN HOUSE SEMINAR",
+	MRC: "COMMUNITY HOUSE SEMINAR",
+	MRD: "DU BOIS HOUSE SEMINAR",
+	MRE: "EAST ASIA HOUSE SEMINAR",
+	MRG: "HARRISON HOUSE SEMINAR",
+	MRH: "HARNWELL HOUSE SEMINAR",
+	MRI: "HILL HOUSE SEMINAR",
+	MRK: "KINGS COURT/ENGLISH HOUSE SEMINAR",
+	MRL: "LATIN AMERICA HOUSE SEMINAR",
+	MRM: "MODERN LANGUAGE COLLEGE HOUSE SEMINAR",
+	MRN: "INTERNATIONAL HOUSE SEMINAR",
+	MRO: "HAMILTON COLLEGE HOUSE SEMINAR",
+	MRP: "PROVOST TOWER SEMINAR",
+	MRQ: "FISHER HASSENFELD COLLEGE HOUSE SEMINAR",
+	MR: "RECITATIONS WILL BE ASSIGNED AT FIRST LEC",
+	MRR: "GREGORY COLLEGE HOUSE SEMINAR",
+	MRS: "SPRUCE STREET COLLEGE HOUSE SEMINAR",
+	MRT: "STOUFFER HOUSE SEMINAR",
+	MRU: "UPPER QUAD SEMINAR",
+	MRV: "VAN PELT COLLEGE HOUSE SEMINAR",
+	MRW: "WARE COLLEGE HOUSE SEMINAR",
+	MRY: "COMMUNITY SERVICE HOUSE SEMINAR",
+	MRZ: "READING COURSE",
+	MSB: "STUDY ABROAD COURSE",
+	MSG: "CONTACT DEPT or INSTRUCTOR FOR CLASSRM INFO",
+	MSI: "SPEAKING INTENSIVE COURSE",
+	MSL: "AN ACADEMICALLY BASED COMMUNITY SERV COURSE",
+	MSO: "FOR MASTER STUDENTS ONLY",
+	MSQ: "SEE DEPT. FOR SECTION NUMBERS",
+	MSU: "COMMUNICATION WITHIN THE CURRICULUM",
+	MTG: "GRADUATING SENIORS ONLY",
+	MTJ: "SEATS RESERVED FOR SENIORS AND JUNIORS",
+	MTS: "SEATS RESERVED FOR SENIORS",
+	MWA: "WATU PROGRAM - FULFILLS 1/2 COLLEGE WRT REQ",
+	MWB: "FULFILLS 1/2 COLLEGE WRITING REQUIREMENT",
+	MWC: "WRITING REQUIREMENT",
+	MWD: "WHARTON DOCTORAL COURSE",
+	MWE: "WHARTON EXECUTIVE MBA COURSE",
+	MWH: "FOR WHARTON STUDENTS ONLY",
+	MWI: "WISTAR INSTITUTE AUDITORIUM",
+	MWL: "LITERATURES OF THE WORLD",
+	MWM: "CRITICAL WRITING IN THE MAJOR",
+	MWP: "WRITING ACROSS THE UNIVERSITY PROGRAM",
+	MWR: "WRITING COURSE",
+	MWS: "JOSEPH WHARTON SCHOLARS ONLY",
+	MWX: "WRITING SAMPLES REQUIRED",
+	MWZ: "WATU CREDIT OPTIONAL - SEE INSTRUCTOR",
+	MYL: "YEAR LONG COURSE",
 	PAD: "PERMISSION NEEDED FROM ADVISOR",
 	PAU: "AUDITORS NEED PERMISSION",
 	PCD: "PERMISSION NEEDED FROM DESIGN REGISTRAR",
@@ -17,6 +165,9 @@ var UCC_EXPL = {
 	PLC: "PENN LANGUAGE CENTER PERMISSION NEEDED",
 	PNM: "NON-MAJORS NEED PERMISSION FROM DEPARTMENT",
 	PUN: "UNDERGRADUATES NEED PERMISSION",
+	//"Q&": "       CONTINUATION OF ABOVE QUOTA",
+	QLM: "QUOTA, LIMIT SPECIFIED SEATS",
+	QRS: "QUOTA, RESERVE SPECIFIED SEATS"
 }
 
 if (document.title == "Trade Proposals") {
@@ -94,6 +245,16 @@ function renderTradeProposal(editing) {
 
 }
 
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
 function renderSearchResults(editing){
   if ($('#api_data').text() != "") {
 		courseData = JSON.parse($('#api_data').text())
@@ -104,27 +265,49 @@ function renderSearchResults(editing){
     } else if(courseData.length == 0){
       $('#results').html("<br><span style='color:red;'>No matching courses found for this semester.")
     } else{
-      courseData = courseData.filter(function(c){return !tradeproposal.offerings.includes(c["section_id_normalized"].replace(/\s/g,'')) && !tradeproposal.requests.includes(c["section_id_normalized"].replace(" ", "")) })
+      //courseData = courseData.filter(function(c){return !tradeproposal.offerings.includes(c["section_id_normalized"].replace(/\s/g,'')) && !tradeproposal.requests.includes(c["section_id_normalized"].replace(" ", "")) })
   		var requestedCourseNum = $('#course').val()
       var htmlStuff = "";
   		for (var i = 0; i < courseData.length; i++) {
-  			var name = courseData[i]["section_id_normalized"].replace(" ", "")
-  			htmlStuff += "<br><span onclick=\"offerCourse('"+JSON.stringify(editing)+"', '"+name+"')\" style='border-radius: 5px; padding: 1px 2px 1px 2px; background-color: red; color:white; cursor: pointer;' >Give</span> <span onclick=\"requestCourse('"+JSON.stringify(editing)+"', '"+name+"')\" style='border-radius: 5px; padding: 1px 2px 1px 2px; background-color: green; color:white; cursor: pointer;'>Receive</span> <span>" + name + "</span>"
+  			var name = courseData[i]["section_id_normalized"].replace(/\s/g,'')
+				crossListedCourse = Object.entries(crossListings).reduce((r,e)=>{return (e[1].includes(name) ? e[0] : r)}, "")
+				htmlStuff+="<br>"
+				if(!(name in crossListings) && crossListedCourse == ""){
+					htmlStuff += "<span onclick=\"offerCourse('"+JSON.stringify(editing)+"', '"+name+"')\" style='border-radius: 5px; padding: 1px 2px 1px 2px; background-color: red; color:white; cursor: pointer;' >Give</span> <span onclick=\"requestCourse('"+JSON.stringify(editing)+"', '"+name+"')\" style='border-radius: 5px; padding: 1px 2px 1px 2px; background-color: green; color:white; cursor: pointer;'>Receive</span>&nbsp;"
+				}
+				if(name in crossListings){
+					htmlStuff+= "<span>" + name + "</span><span style='color:green;'>&nbsp;(added to trade proposal)</span>"
+				}
+				else if(crossListedCourse != ""){
+					htmlStuff+= "<span>" + name + "</span><span style='color:green;'>&nbsp;(crosslisted with "+crossListedCourse+")</span>"
+				}
+				else{
+					htmlStuff+= "<span>" + name + "</span>"
+				}
   		}
   		$('#results').html(htmlStuff)
     }
 	}
 }
 
+var crossListings = {}
 var tradeproposal = {
   offerings: [],
   requests: []
 };
 
+function addCrossListings(name, courseDetails){
+	crossListings[name] = courseDetails['crosslistings'].map(e=>{return e.subject+'-'+e.course_id+'-'+e.section_id}).filter(e=>{console.log(e, name); return e!=name})
+}
+
 function offerCourse(edstring, name){
   editing = JSON.parse(edstring)
-  if(JSON.parse($('#api_data').text()).find(c => { return c["section_id_normalized"].replace(/\s/g,'') == name})["important_notes"].includes("Permission Needed From Department")){ alert("This course cannot be traded (it requires a permit).") }
+	courseDetails = JSON.parse($('#api_data').text()).find(c => { return c["section_id_normalized"].replace(/\s/g,'') == name})
+	var reqs = courseDetails["requirements"]
+	var ucc = reqs.reduce(function(total, currentVal){ if(UCC.includes(currentVal.registration_control_code)){ return total.concat([currentVal.registration_control_code])} else{ return total } } , [])
+	if(reqs.reduce(function(total, currentVal){ return total || UCC.includes(currentVal.registration_control_code) } , false)){ mesg = "This course cannot be traded.  It has the following unsupported permit requirement(s):\n\n"; ucc.forEach(e=>{ mesg += UCC_EXPL[e]+"\n"}); alert(mesg) }
   else{
+		addCrossListings(name, courseDetails)
     tradeproposal.offerings.push(name)
     renderSearchResults(editing)
     renderTradeProposal(editing)
@@ -132,17 +315,18 @@ function offerCourse(edstring, name){
 }
 function requestCourse(edstring, name){
   editing = JSON.parse(edstring)
-	var reqs = JSON.parse($('#api_data').text()).find(c => { return c["section_id_normalized"].replace(/\s/g,'') == name})["requirements"]
+	courseDetails = JSON.parse($('#api_data').text()).find(c => { return c["section_id_normalized"].replace(/\s/g,'') == name})
+	var reqs = courseDetails["requirements"]
 	var ucc = reqs.reduce(function(total, currentVal){ if(UCC.includes(currentVal.registration_control_code)){ return total.concat([currentVal.registration_control_code])} else{ return total } } , [])
-	var other_cc = reqs.reduce(function(total, currentVal){ if(UCC.includes(currentVal.registration_control_code)){ return total.concat([currentVal.registration_control_code])} else{ return total } } , [])
-	if(reqs.reduce(function(total, currentVal){ return total || UCC.includes(currentVal.registration_control_code) } , false)){ mesg = "This course cannot be traded.  It has the following unsupported permit requirement(s):\n"; ucc.forEach(function(e){ mesg += "\n"+UCC_EXPL[e]+"\n"}); alert(mesg) }
+	if(reqs.reduce(function(total, currentVal){ return total || UCC.includes(currentVal.registration_control_code) } , false)){ mesg = "This course cannot be traded.  It has the following unsupported permit requirement(s):\n"; ucc.forEach(e=>{ mesg += "\n"+UCC_EXPL[e]+"\n"}); alert(mesg) }
   else{
-		mesg = "Confirm that you are currently able to add this course, based on its permit requirements:\n"
-		other_cc.forEach(function(e){ mesg += "\n"+UCC_EXPL[e]})
-		if(other_cc.length==0 || confirm(mesg)){
-    tradeproposal.requests.push(name)
-    renderSearchResults(editing)
-    renderTradeProposal(editing)}
+		mesg = "Confirm that you are currently able to add this course, based on its permit requirements:\n\n"
+		reqs.forEach(e=>{ mesg += UCC_EXPL[e.registration_control_code]+"\n"})
+		if(reqs.length==0 || confirm(mesg)){
+			addCrossListings(name, courseDetails)
+	    tradeproposal.requests.push(name)
+	    renderSearchResults(editing)
+	    renderTradeProposal(editing)}
   }
 }
 function deselectCourse(edstring, name){
