@@ -34,8 +34,10 @@
     <h2><%if(locals.num){%>Update<%}else{%>New<%}%> Trade Proposal</h2>
     <br>
     <p>A trade proposal consists of a collection of courses (<span style='color:red;'>offerings</span>),
-      any one of which you would be willing to trade for a member of another collection
-      of courses (<span style='color:green;'>requests</span>).  Note that this tool will only facilitate single-course-for-single-course trades;
+      <mark>any one of which you would be willing to trade for any one member</mark> of another collection
+      of courses (<span style='color:green;'>requests</span>).<br>So for instance, if I <span style='color:green;'>request PHIL-001-002 and PHIL-008-002</span>, and <span style='color:red;'>offer PHIL-001-001 and PHIL-008-001</span>, <br>then the following trades may potentially be matched:<br>[<span style='color:green;'>PHIL-001-002</span> for <span style='color:red;'>PHIL-001-001</span>, <span style='color:green;'>PHIL-001-002</span> for <span style='color:red;'>PHIL-008-001</span>,
+        <span style='color:green;'>PHIL-008-002</span> for <span style='color:red;'>PHIL-001-001</span>,
+        <span style='color:green;'>PHIL-008-002</span> for <span style='color:red;'>PHIL-008-001</span>]<br>Note that this tool will only facilitate single-course-for-single-course trades;
     putting 5 courses in your offering and requesting sections does not mean you will be able to trade multiple courses for multiple courses.
   It just means that you are willing to trade away any course in your offerings list for any course in your requests list.  You must have at least 1 course in both your offerings and requests section (if you just want
 to drop a course and give it to someone who needs it, post on the <a target="_blank" href='https://www.facebook.com/groups/759880114532358/'>Facebook group</a>).</p>
