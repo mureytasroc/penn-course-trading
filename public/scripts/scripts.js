@@ -552,6 +552,7 @@ if (!USER_ID) {
 	$('#headerLoggedIn').addClass('hide')
 	$('#headerLogout').css('display', 'none')
 	$('#headerLogout').text("Sign Out")
+	$('#titlelink').attr('href', '/')
 
 } else {
 	$('#headerLoggedIn').removeClass('hide')
@@ -559,4 +560,5 @@ if (!USER_ID) {
 	$('#headerLogout').css('display', 'block')
 	$('#headerLogout').css('color', 'white')
 	$('#headerLogout').click(signOut);
+	$('#titlelink').attr('href', '/tradeproposals')
 }
