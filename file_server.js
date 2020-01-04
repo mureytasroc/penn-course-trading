@@ -24,7 +24,7 @@ var Admin = require(__dirname + '/models/Admin');
 require('dotenv').config();
 
 
-app.use(express.static('public'));
+app.use(express.static('public', {maxAge: '7d'}));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(favicon(__dirname + '/public/images/favicon.png'));
