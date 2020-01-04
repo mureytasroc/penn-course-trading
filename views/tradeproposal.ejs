@@ -21,7 +21,8 @@
 
 		<span class="hide" id="token_id"><%if(locals.user){%><%=user.token_id%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
     <span class="hide" id="api_data"><% if(locals.apidata){%><%=JSON.stringify(apidata)%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
-    <span class="hide" id="edit-proposal"><%if(locals.tradeproposal){%><%=JSON.stringify(tradeproposal)%><%}%></span>
+    <span class="hide" id="tradeproposals"><%if(locals.tradeproposals){%><%=JSON.stringify(tradeproposals)%><%}%></span>
+    <span class="hide" id="edit-crosslistings"><%if(locals.crosslistings){%><%=JSON.stringify(crosslistings)%><%}%></span>
     <span class="hide" id="edit-num"><%if(locals.num){%><%=num%><%}%></span>
     <span class="hide" id="user_id"><%if(locals.user_id){%><%=user_id%><%}%></span><!-- Do not delete this line!!! It is not visible / does not affect the web page but it is necessary -->
     <span class="hide" id="offering"><%if(locals.offering){%><%=offering%><%}%></span>

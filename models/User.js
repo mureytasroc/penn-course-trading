@@ -88,9 +88,7 @@ Array.prototype.unique = function() {
     return a;
 };
 
-exports.setTradeProposal = function (userObject, offerings, requests, callback){
-	console.log(offerings);
-	console.log(requests);
+exports.addTradeProposal = function (userObject, offerings, requests, crosslistings, callback){
 	exports.getUsers(function (a) {
 		found = false;
 		for (var i = 0; i < a.length; i++) {
@@ -99,12 +97,12 @@ exports.setTradeProposal = function (userObject, offerings, requests, callback){
 				var allProposals=[];
 				a[i]["lastmodified"] = Date();
 				if(!a[i]["tradeproposals"]){
-					allProposals=[{"offerings":offerings, "requests":requests, "datecreated":a[i]["lastmodified"]}]
+					allProposals=[{"offerings":offerings, "requests":requests, "crosslistings":crosslistings, "datecreated":a[i]["lastmodified"]}]
 				}
 				else{
 					allProposals = JSON.parse(a[i]["tradeproposals"])
-					if(!proposalExists(allProposals, offerings, requests)) {
-						allProposals = allProposals.concat([{"offerings":offerings, "requests":requests, "datecreated":a[i]["lastmodified"]}])
+					if(!proposalExists(allProposals, offerings, requests, crosslistings)) {
+						allProposals = allProposals.concat([{"offerings":offerings, "requests":requests, "crosslistings":crosslistings, "datecreated":a[i]["lastmodified"]}])
 					}
 				}
 				a[i]["tradeproposals"] = JSON.stringify(allProposals)
@@ -119,9 +117,20 @@ exports.setTradeProposal = function (userObject, offerings, requests, callback){
 	});
 }
 
-function proposalExists(allProposals, offerings, requests){
+function proposalExists(allProposals, offerings, requests, crosslistings){
 	result = false;
-	allProposals.forEach(prop => { if(arraysEqual(prop.offerings, offerings) || arraysEqual(prop.requests, requests)) { result = true; } })
+	allProposals.forEach(prop => { if(courseListsEquivalent(prop.offerings, offerings, crosslistings) && courseListsEquivalent(prop.requests, requests, crosslistings)) { result = true; } })
+	return result;
+}
+
+function courseListsEquivalent(old_list, cur_list, crosslistings){
+	if(arraysEqual(old_list,cur_list)){ return true; }
+	result = true;
+	cur_list.forEach(c=>{
+		old_list.forEach(o=>{
+			if(c!=o && !crosslistings[c].includes(o)){ result = false; }
+		});
+	});
 	return result;
 }
 
@@ -136,17 +145,22 @@ function arraysEqual(a, b) {
 }
 
 
-exports.editTradeProposal = function (num,sub, offerings, requests, callback){
+exports.editTradeProposal = function (num,sub, offerings, requests, crosslistings, callback){
 	exports.getUsers(function (a) {
 		for (var i = 0; i < a.length; i++) {
 			if (sub == a[i]['sub']) {
 				var proposals=JSON.parse(a[i]['tradeproposals'])
 				proposals[num]["offerings"]=offerings
 				proposals[num]["requests"]=requests
-				a[i]['tradeproposals']=JSON.stringify(proposals)
-				a[i].save(function(){
-					callback(proposals)
-				})
+				proposals[num]["crosslistings"]=crosslistings
+				if(proposalExists(proposals.filter((e,i)=>{return i!=num}), offerings, requests, crosslistings)){
+					exports.deleteTradeProposal(sub,num,callback)
+				} else{
+					a[i]['tradeproposals']=JSON.stringify(proposals)
+					a[i].save(function(){
+						callback(proposals)
+					})
+				}
 			}
 		}
 	});
@@ -177,7 +191,7 @@ exports.deleteTradeProposal=function(id,num,callback){
 				var tradeproposals=JSON.parse(a[i]["tradeproposals"])
 				tradeproposals.splice(num,1)
 				a[i]["tradeproposals"]=JSON.stringify(tradeproposals)
-				a[i].save(callback);
+				a[i].save(function(){callback(tradeproposals)});
 			}
 		}
 	});

@@ -172,9 +172,8 @@ var UCC_EXPL = {
 
 if (document.title == "Trade Proposals") {
 
-
+$('#useridspan').html("<input class='hide' type='text' name='id' value='" + USER_ID + "'>")
 $('#tradeproposalsList').html("<span style='color:green;'>Loading trade proposals...</span>")
-
 
 if($('#user_id').text()!=""){
     sessionStorage.clear()
@@ -182,19 +181,24 @@ if($('#user_id').text()!=""){
     sessionStorage.setItem("user_id",USER_ID)
 }
 
-if($('#tradeproposals').text()==""){
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
-    $('#tradeproposals').text(this.responseText)
-    finishPopulatingAlerts();
-  }
-};
-xhttp.open("GET", "/"+USER_ID+"/tradeproposals", true);
-xhttp.send();
+if(JSON.parse($('#redirect').text())) {
+	window.location.replace('/tradeproposals')
 }
 else{
-finishPopulatingAlerts();
+	if($('#tradeproposals').text()==""){
+	  var xhttp = new XMLHttpRequest();
+	  xhttp.onreadystatechange = function() {
+	  if (this.readyState == 4 && this.status == 200) {
+	    $('#tradeproposals').text(this.responseText)
+	    finishPopulatingAlerts();
+	  }
+	};
+	xhttp.open("GET", "/"+USER_ID+"/tradeproposals", true);
+	xhttp.send();
+	}
+	else{
+	finishPopulatingAlerts();
+	}
 }
 
 }
@@ -207,7 +211,6 @@ function finishPopulatingAlerts() {
 		html += "<td><div class='tableDiv'><button type='submit' name='edit' value=" + i + ">Edit</button><button type='submit' name='delete' value=" + i + ">Delete</button></div></td></tr>"
 	}
 	html += "</table>"
-
 	$('#tradeproposalsList').html(html)
 }
 
@@ -232,7 +235,7 @@ function renderTradeProposal(editing) {
 	}
   htmlStuff+="<br><br><br><input type='submit' value='"
   if (editing) {htmlStuff += "Update Trade Proposal"} else {htmlStuff += "Create Trade Proposal"}
-  htmlStuff +="'></div></form>"
+  htmlStuff +="'>&nbsp; <button onclick='window.location.href=\"/tradeproposals\"' type='button'>Cancel</button></div></form>"
 	$('#tradeproposaldiv').html(htmlStuff);
 
   $('#tradeproposalform').submit(function(){
@@ -270,16 +273,25 @@ function renderSearchResults(editing){
       var htmlStuff = "";
   		for (var i = 0; i < courseData.length; i++) {
   			var name = courseData[i]["section_id_normalized"].replace(/\s/g,'')
-				crossListedCourse = Object.entries(crossListings).reduce((r,e)=>{return (e[1].includes(name) ? e[0] : r)}, "")
+				var localCrosslistings = courseData[i]['crosslistings'].map(e=>{return e.subject+'-'+e.course_id+'-'+e.section_id}).filter(e=>{return e!=name})
+				crossListedCourse = Object.entries(tradeproposal.crosslistings).reduce((r,e)=>{return (e[1].includes(name) ? e[0] : r)}, "")
 				htmlStuff+="<br>"
-				if(!(name in crossListings) && crossListedCourse == ""){
+				prevOf=tradeproposals.reduce((r,e,i)=>{if(i==tradeproposalnum){ return r; } return r||(e.offerings.includes(name)?name:"")||localCrosslistings.reduce((r1,e1)=>{return r1||(e.offerings.includes(e1)?e1:"")},"")},"")
+				prevReq=tradeproposals.reduce((r,e,i)=>{if(i==tradeproposalnum){ return r; } return r||(e.requests.includes(name)?name:"")||localCrosslistings.reduce((r1,e1)=>{return r1||(e.requests.includes(e1)?e1:"")},"")},"")
+				if(!(name in tradeproposal.crosslistings) && crossListedCourse=="" && prevOf=="" && prevReq==""){
 					htmlStuff += "<span onclick=\"offerCourse('"+JSON.stringify(editing)+"', '"+name+"')\" style='border-radius: 5px; padding: 1px 2px 1px 2px; background-color: red; color:white; cursor: pointer;' >Give</span> <span onclick=\"requestCourse('"+JSON.stringify(editing)+"', '"+name+"')\" style='border-radius: 5px; padding: 1px 2px 1px 2px; background-color: green; color:white; cursor: pointer;'>Receive</span>&nbsp;"
 				}
-				if(name in crossListings){
+				if(name in tradeproposal.crosslistings){
 					htmlStuff+= "<span>" + name + "</span><span style='color:green;'>&nbsp;(added to trade proposal)</span>"
 				}
 				else if(crossListedCourse != ""){
 					htmlStuff+= "<span>" + name + "</span><span style='color:green;'>&nbsp;(crosslisted with "+crossListedCourse+")</span>"
+				}
+				else if(prevOf) {
+					htmlStuff+= "<span onclick=\"offerCourse('"+JSON.stringify(editing)+"', '"+name+"')\" style='border-radius: 5px; padding: 1px 2px 1px 2px; background-color: red; color:white; cursor: pointer;' >Give</span>&nbsp; <span>" + name + "</span><span style='color:blue;'><br>(you are offering "+prevOf+(prevOf==name?"":(" = "+name))+" in another trade proposal)</span>"
+				}
+				else if(prevReq) {
+					htmlStuff+= "<span onclick=\"requestCourse('"+JSON.stringify(editing)+"', '"+name+"')\" style='border-radius: 5px; padding: 1px 2px 1px 2px; background-color: green; color:white; cursor: pointer;'>Receive</span>&nbsp; <span>" + name + "</span><span style='color:blue;'><br>(you are requesting "+prevReq+(prevReq==name?"":(" = "+name))+" in another trade proposal)</span>"
 				}
 				else{
 					htmlStuff+= "<span>" + name + "</span>"
@@ -290,14 +302,16 @@ function renderSearchResults(editing){
 	}
 }
 
-var crossListings = {}
+var tradeproposalnum = -1;
+var tradeproposals = [];
 var tradeproposal = {
   offerings: [],
-  requests: []
+  requests: [],
+	crosslistings: {}
 };
 
 function addCrossListings(name, courseDetails){
-	crossListings[name] = courseDetails['crosslistings'].map(e=>{return e.subject+'-'+e.course_id+'-'+e.section_id}).filter(e=>{console.log(e, name); return e!=name})
+	tradeproposal.crosslistings[name] = courseDetails['crosslistings'].map(e=>{return e.subject+'-'+e.course_id+'-'+e.section_id}).filter(e=>{return e!=name})
 }
 
 function offerCourse(edstring, name){
@@ -318,7 +332,7 @@ function requestCourse(edstring, name){
 	courseDetails = JSON.parse($('#api_data').text()).find(c => { return c["section_id_normalized"].replace(/\s/g,'') == name})
 	var reqs = courseDetails["requirements"]
 	var ucc = reqs.reduce(function(total, currentVal){ if(UCC.includes(currentVal.registration_control_code)){ return total.concat([currentVal.registration_control_code])} else{ return total } } , [])
-	if(reqs.reduce(function(total, currentVal){ return total || UCC.includes(currentVal.registration_control_code) } , false)){ mesg = "This course cannot be traded.  It has the following unsupported permit requirement(s):\n"; ucc.forEach(e=>{ mesg += "\n"+UCC_EXPL[e]+"\n"}); alert(mesg) }
+	if(reqs.reduce(function(total, currentVal){ return total || UCC.includes(currentVal.registration_control_code) } , false)){ mesg = "This course cannot be traded.  It has the following unsupported permit requirement(s):\n\n"; ucc.forEach(e=>{ mesg += UCC_EXPL[e]+"\n"}); alert(mesg) }
   else{
 		mesg = "Confirm that you are currently able to add this course, based on its permit requirements:\n\n"
 		reqs.forEach(e=>{ mesg += UCC_EXPL[e.registration_control_code]+"\n"})
@@ -330,11 +344,12 @@ function requestCourse(edstring, name){
   }
 }
 function deselectCourse(edstring, name){
-  editing = JSON.parse(edstring)
-  tradeproposal.offerings = tradeproposal.offerings.filter(function(c){ return c != name })
-  tradeproposal.requests = tradeproposal.requests.filter(function(c){ return c != name })
-  renderSearchResults(editing)
-  renderTradeProposal(editing)
+  editing = JSON.parse(edstring);
+  tradeproposal.offerings = tradeproposal.offerings.filter(function(c){ return c != name });
+  tradeproposal.requests = tradeproposal.requests.filter(function(c){ return c != name });
+	delete tradeproposal.crosslistings[name]
+  renderSearchResults(editing);
+  renderTradeProposal(editing);
 }
 
 function searchFun(editing){
@@ -369,11 +384,11 @@ function searchFun(editing){
 if (document.title == "Trade Proposal") {
 
 	var editing = false;
-	var tradeproposalnum = -1;
+	tradeproposals = JSON.parse($('#tradeproposals').text());
 	if ($("#edit-num").text() != "") {
 		editing = true;
 		tradeproposalnum = parseInt($('#edit-num').text());
-		tradeproposal = JSON.parse($('#edit-proposal').text())
+		tradeproposal = tradeproposals[tradeproposalnum];
 	}
 
 	renderTradeProposal(editing);

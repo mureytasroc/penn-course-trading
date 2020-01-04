@@ -156,7 +156,24 @@ router.get('/tradeproposals', function(req, res) {
 
   res.status(200);
   res.setHeader('Content-Type', 'text/html')
-  res.render('tradeproposals');
+  res.render('tradeproposals', {redirect:false});
+})
+
+router.get('/tradeproposal', function(req, res) {
+  const ip = requestIp.getClientIp(request);
+	var log = {
+		'Timestamp': moment().tz('America/New_York'),
+		'IP': ip,
+		'Verb': "GET",
+		'Route': "/tradeproposal",
+		'Page': "tradeproposal"
+	}
+	console.log(log);
+	Admin.log(log, function(){});
+
+  res.status(200);
+  res.setHeader('Content-Type', 'text/html')
+  res.render('tradeproposals', {redirect: true});
 })
 
 router.get('/:user/tradeproposals', function(req, res) {
@@ -209,7 +226,7 @@ userObject['calendar']=req.body.jcal
         res.status(200);
         res.setHeader('Content-Type', 'text/html')
         res.render('tradeproposals', {
-          id: req.body.formID, userObject:userObject, tradeproposals:tradeproposals
+          id: req.body.formID, userObject:userObject, tradeproposals:tradeproposals, redirect:true
         });
 
     });
@@ -279,6 +296,7 @@ router.post('/tradeproposals', function(req, res) {
 
     offerings = tradeproposal.offerings
     requests = tradeproposal.requests
+    crosslistings = tradeproposal.crosslistings
 
 
     userid = req.body.userid;
@@ -286,10 +304,10 @@ router.post('/tradeproposals', function(req, res) {
     userObject = {}
     userObject['sub']=userid
 
-    User.setTradeProposal(userObject, offerings, requests, function(tradeproposals){
+    User.addTradeProposal(userObject, offerings, requests, crosslistings, function(tradeproposals){
       res.status(200);
       res.setHeader('Content-Type', 'text/html')
-      res.render('tradeproposals',{tradeproposals:tradeproposals});
+      res.render('tradeproposals',{tradeproposals:tradeproposals, redirect:true});
     })
   } else{
       const ip = requestIp.getClientIp(request);
@@ -312,10 +330,10 @@ router.post('/tradeproposals', function(req, res) {
 
     num=req.body.num;
 
-    User.editTradeProposal(num, userid, tradeproposal.offerings, tradeproposal.requests, function(tradeproposals){
+    User.editTradeProposal(num, userid, tradeproposal.offerings, tradeproposal.requests, tradeproposal.crosslistings, function(tradeproposals){
       res.status(200);
       res.setHeader('Content-Type', 'text/html')
-      res.render('tradeproposals',{tradeproposals:tradeproposals});
+      res.render('tradeproposals',{tradeproposals:tradeproposals, redirect:true});
     })
   }
 
@@ -348,15 +366,15 @@ router.post('/edittradeproposal', function(req, res) {
     User.getTradeProposals(req.body.id,function(proposals){
       res.status(200);
       res.setHeader('Content-Type', 'text/html')
-      res.render('tradeproposal',{num:req.body.edit,tradeproposal:proposals[req.body.edit]});
+      res.render('tradeproposal', {num:req.body.edit,tradeproposals:proposals});
     })
   }
   else if(req.body.delete){
     console.log("delete "+req.body.delete)
-    User.deleteTradeProposal(req.body.id,req.body.delete,function(){
+    User.deleteTradeProposal(req.body.id,req.body.delete,function(proposals){
       res.status(200);
       res.setHeader('Content-Type', 'text/html')
-      res.render('tradeproposals');
+      res.render('tradeproposals', {tradeproposals:proposals, redirect:true});
     })
   }
 
@@ -366,7 +384,7 @@ router.post('/edittradeproposal', function(req, res) {
 
 
 
-router.get('/tradeproposal', function(req, res) {
+router.post('/tradeproposal', function(req, res) {
 
   const ip = requestIp.getClientIp(request);
 	var log = {
@@ -379,9 +397,11 @@ router.get('/tradeproposal', function(req, res) {
 	console.log(log);
 	Admin.log(log, function(){});
 
-  res.status(200);
-  res.setHeader('Content-Type', 'text/html')
-  res.render('tradeproposal');
+  User.getTradeProposals(req.body.id,function(proposals){
+    res.status(200);
+    res.setHeader('Content-Type', 'text/html')
+    res.render('tradeproposal', {tradeproposals:proposals});
+  })
 
 
 });

@@ -23,6 +23,8 @@
 
 <span class="hide" id="tradeproposals"><%if(locals.tradeproposals){%><%=JSON.stringify(tradeproposals)%><%}%></span>
 
+<span class="hide" id="redirect"><%=JSON.stringify(locals.redirect == true)%></span>
+
 <div class="bodydiv">
 
 <h2>Trade Proposals</h2>
@@ -39,13 +41,17 @@
 	</span>
 </form>
 
-<form enctype="application/x-www-form-urlencoded" action="/tradeproposal" method="GET">
+<form enctype="application/x-www-form-urlencoded" action="/tradeproposal" method="POST">
+	<span id='useridspan'></span>
 
 <br><br>
+
 	 <input type="submit" value="Add Trade Proposal"><br>
 </form>
 
 </div>
+
+<hr style='padding:0; margin:0; height:90px; visibility:hidden;' />
 
 
 	<% include global/footer %>
