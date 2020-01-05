@@ -106,7 +106,7 @@ User.getUsers(function(users){
 app.get('/', function (request, response) {
 	const ip = requestIp.getClientIp(request);
 	ipInfo(ip, (err, cloc) => {
-		if(!request.query.wakeup && (err || !cloc || !BLACKLISTED_ORGS.reduce((t,c)=>{return t||cloc.org.includes(c)},false))){
+		if(!request.query.wakeup && (err || !cloc || !cloc.org || !BLACKLISTED_ORGS.reduce((t,c)=>{return t||cloc.org.includes(c)},false))){
 			var log = {
 				'Timestamp': moment().tz('America/New_York'),
 				'IP': ip,
