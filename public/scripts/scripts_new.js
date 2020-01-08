@@ -360,7 +360,7 @@ function searchFun(editing){
   $('#course').val(course)
   section = $('#section').val().replace(/[^0-9]/g, "")
   $('#section').val(section)
-  if(dept.length < 3 || dept.length > 4){ $('#dept').css('border-color', 'red'); setTimeout(function(){alert("Department code must have 3 to 4 letters.")}, 50); }
+  if(dept.length < 2 || dept.length > 4){ $('#dept').css('border-color', 'red'); setTimeout(function(){alert("Department code must have 2 to 4 letters.")}, 50); }
   else if(course.length != 3){ $('#course').css('border-color', 'red'); setTimeout(function(){alert("Course code must have 3 numbers (include leading 0s).")}, 50); }
   else if(section.length > 3){ $('#section').css('border-color', 'red'); setTimeout(function(){alert("Section cannot have more than 3 numbers.")}, 50); }
   else {

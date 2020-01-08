@@ -24,7 +24,7 @@ var Admin = require(__dirname + '/models/Admin');
 require('dotenv').config();
 
 
-app.use(express.static('public', {maxAge: '7d'}));
+app.use(express.static('public', {maxAge: '0d', 'Cache-Control': 'no-cache'}));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(favicon(__dirname + '/public/images/favicon.png'));
@@ -127,8 +127,8 @@ app.get('/', function (request, response) {
 			}
 			console.log(log);
 		}
-		response.status(200);
-		response.setHeader('Content-Type', 'text/html')
+		response.status(200); response.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+    //response.setHeader('Content-Type', 'text/html')
 		response.render('index')
 	})
 });
@@ -146,8 +146,8 @@ app.get('/about', function (request, response) {
 	console.log(log);
 	Admin.log(log, function(){});
 
-    response.status(200);
-    response.setHeader('Content-Type', 'text/html')
+    response.status(200); response.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+    //response.setHeader('Content-Type', 'text/html')
     response.render('about');
 
 });

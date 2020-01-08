@@ -40,8 +40,8 @@ router.get('/userdetails', function(req, res) {
 	console.log(log);
 	Admin.log(log, function(){});
 
-  res.status(200);
-  res.setHeader('Content-Type', 'text/html')
+  res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+  //res.setHeader('Content-Type', 'text/html')
   res.render('user_details');
 
 
@@ -85,15 +85,15 @@ userObject = JSON.parse(JSON.stringify(payload))
 
     User.checkUser(userObject , function(response) {
       if(response=="new"){
-        res.status(200);
-        res.setHeader('Content-Type', 'text/html')
+        res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+        //res.setHeader('Content-Type', 'text/html')
         res.render('user_details', {
           user_id: userid, 'userObject':userObject
         });
       }
       else{
-        res.status(200);
-        res.setHeader('Content-Type', 'text/html')
+        res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+        //res.setHeader('Content-Type', 'text/html')
         res.render('user_details', {//CHANGE THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!
           user_id: userid,  'userObject':userObject
         });
@@ -135,8 +135,8 @@ router.get('/logout', function(req, res) {
 	console.log(log);
 	Admin.log(log, function(){});
 
-  res.status(200);
-  res.setHeader('Content-Type', 'text/html')
+  res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+  //res.setHeader('Content-Type', 'text/html')
   res.render('index', {logout:true});
 })
 
@@ -154,8 +154,8 @@ router.get('/tradeproposals', function(req, res) {
 	console.log(log);
 	Admin.log(log, function(){});
 
-  res.status(200);
-  res.setHeader('Content-Type', 'text/html')
+  res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+  //res.setHeader('Content-Type', 'text/html')
   res.render('tradeproposals', {redirect:false});
 })
 
@@ -171,8 +171,8 @@ router.get('/tradeproposal', function(req, res) {
 	console.log(log);
 	Admin.log(log, function(){});
 
-  res.status(200);
-  res.setHeader('Content-Type', 'text/html')
+  res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+  //res.setHeader('Content-Type', 'text/html')
   res.render('tradeproposals', {redirect: true});
 })
 
@@ -223,8 +223,8 @@ userObject['calendar']=req.body.jcal
 
     User.setUser(userObject , function(tradeproposals) {
 
-        res.status(200);
-        res.setHeader('Content-Type', 'text/html')
+      res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+      //res.setHeader('Content-Type', 'text/html')
         res.render('tradeproposals', {
           id: req.body.formID, userObject:userObject, tradeproposals:tradeproposals, redirect:true
         });
@@ -305,8 +305,8 @@ router.post('/tradeproposals', function(req, res) {
     userObject['sub']=userid
 
     User.addTradeProposal(userObject, offerings, requests, crosslistings, function(tradeproposals){
-      res.status(200);
-      res.setHeader('Content-Type', 'text/html')
+      res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+      //res.setHeader('Content-Type', 'text/html')
       res.render('tradeproposals',{tradeproposals:tradeproposals, redirect:true});
     })
   } else{
@@ -331,8 +331,8 @@ router.post('/tradeproposals', function(req, res) {
     num=req.body.num;
 
     User.editTradeProposal(num, userid, tradeproposal.offerings, tradeproposal.requests, tradeproposal.crosslistings, function(tradeproposals){
-      res.status(200);
-      res.setHeader('Content-Type', 'text/html')
+      res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+      //res.setHeader('Content-Type', 'text/html')
       res.render('tradeproposals',{tradeproposals:tradeproposals, redirect:true});
     })
   }
@@ -364,16 +364,16 @@ router.post('/edittradeproposal', function(req, res) {
 
   if(req.body.edit){
     User.getTradeProposals(req.body.id,function(proposals){
-      res.status(200);
-      res.setHeader('Content-Type', 'text/html')
+      res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+      //res.setHeader('Content-Type', 'text/html')
       res.render('tradeproposal', {num:req.body.edit,tradeproposals:proposals});
     })
   }
   else if(req.body.delete){
     console.log("delete "+req.body.delete)
     User.deleteTradeProposal(req.body.id,req.body.delete,function(proposals){
-      res.status(200);
-      res.setHeader('Content-Type', 'text/html')
+      res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+      //res.setHeader('Content-Type', 'text/html')
       res.render('tradeproposals', {tradeproposals:proposals, redirect:true});
     })
   }
@@ -398,8 +398,8 @@ router.post('/tradeproposal', function(req, res) {
 	Admin.log(log, function(){});
 
   User.getTradeProposals(req.body.id,function(proposals){
-    res.status(200);
-    res.setHeader('Content-Type', 'text/html')
+    res.status(200); res.set({'Content-Type': 'text/html', maxAge: '0d', 'Cache-Control': 'no-cache'});
+    //res.setHeader('Content-Type', 'text/html')
     res.render('tradeproposal', {tradeproposals:proposals});
   })
 
