@@ -103,6 +103,59 @@ User.getUsers(function(users){
 })
 */
 
+/*
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+User.getUsers(function(users){
+	for(var i=0; i<users.length; i++){
+		console.log(users[i].email)
+		for(var j=i+1; j<users.length; j++){
+			checkForTrades(users[i], users[j])
+		}
+	}
+})
+function checkForTrades(user1, user2){
+	if(user1.tradeproposals!="" && !arraysEqual(JSON.parse(user1.tradeproposals), []) && user2.tradeproposals!="" && !arraysEqual(JSON.parse(user2.tradeproposals), [])){
+		JSON.parse(user1.tradeproposals).forEach(tp1=>{
+			JSON.parse(user2.tradeproposals).forEach(tp2=>{
+				oneToTwo = []
+				tp1.offerings.forEach(o=>{
+					tp2.requests.forEach(r=>{
+						if(o==r || tp1.crosslistings[o].includes(r) || tp2.crosslistings[r].includes(o)){
+							oneToTwo.push([o,r])
+						}
+					})
+				})
+				twoToOne = []
+				tp1.requests.forEach(r=>{
+					tp2.offerings.forEach(o=>{
+						if(o==r || tp2.crosslistings[o].includes(r) || tp1.crosslistings[r].includes(o)){
+							if(o==r || tp2.crosslistings[o].includes(r) || tp1.crosslistings[r].includes(o)){
+								twoToOne.push([o,r])
+							}
+						}
+					})
+				})
+				if(oneToTwo.length>0 && twoToOne.length>0){ tradeFound(user1, tp1, oneToTwo, twoToOne, tp2, user2) }
+			})
+		})
+	}
+}
+function sendMessage(email, message){ console.log("MESSAGE TO "+email+":\n"+message) }
+function tradeFound(user1, user1tp, oneToTwo, twoToOne, user2tp, user2){
+	console.log("\n\nTRADE FOUND BETWEEN "+user1.email +" AND "+user2.email+"\n\n")
+}
+*/
+
+
 app.get('/', function (request, response) {
 	const ip = requestIp.getClientIp(request);
 	ipInfo(ip, (err, cloc) => {
